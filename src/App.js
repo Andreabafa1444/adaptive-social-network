@@ -1,13 +1,13 @@
-import Register from "./pages/Register";
-import Login from "./pages/Login";
+import CreatePost from "./components/CreatePost";
+import Feed from "./components/Feed";
 
 function App() {
   return (
     <div style={{ padding: "2rem" }}>
       <h1>Adaptive Social Network</h1>
-      <Register />
+      <CreatePost />
       <hr />
-      <Login />
+      <Feed />
     </div>
   );
 }
