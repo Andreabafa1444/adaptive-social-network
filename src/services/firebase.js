@@ -4,13 +4,13 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDLRcyfUZX9opbQf7g3nYfdOQUkKcjj8lk",
-    authDomain: "adaptive-social-network.firebaseapp.com",
-    projectId: "adaptive-social-network",
-    storageBucket: "adaptive-social-network.firebasestorage.app",
-    messagingSenderId: "656155214745",
-    appId: "1:656155214745:web:68a024df2b1b1ddcba8908"
-  };
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
+};
 
 const app = initializeApp(firebaseConfig);
 
