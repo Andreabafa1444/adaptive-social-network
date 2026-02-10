@@ -11,11 +11,14 @@ function Navbar() {
   };
 
   return (
-    <nav style={{ marginBottom: "1rem" }}>
-      <Link to="/feed">Feed</Link> |{" "}
-      <Link to="/saved">Guardados</Link> |{" "}
-      <button onClick={logout}>Cerrar sesión</button>
-    </nav>
+    <nav>
+    <Link to="/feed">Feed</Link> |{" "}
+    <Link to="/explore">Explorar</Link> |{" "}
+    <Link to="/saved">Guardados</Link> |{" "}
+    <Link to="/news">Noticias</Link> |{" "}
+    <button onClick={logout}>Cerrar sesión</button>
+  </nav>
+  
   );
 }
 

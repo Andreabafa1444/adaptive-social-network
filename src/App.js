@@ -2,10 +2,13 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./services/firebase";
+import Explore from "./pages/Explore";
+import News from "./pages/News";
 
 import Login from "./pages/Login";
 import FeedPage from "./pages/FeedPage";
 import Saved from "./pages/Saved";
+import Feedback from "./pages/Feedback";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -20,13 +23,12 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) {
-    return <p>Cargando sesión...</p>;
-  }
+  if (loading) return <p>Cargando sesión...</p>;
 
   return (
     <BrowserRouter>
       <Routes>
+
         <Route
           path="/login"
           element={!user ? <Login /> : <Navigate to="/feed" />}
@@ -42,7 +44,15 @@ function App() {
           element={user ? <Saved /> : <Navigate to="/login" />}
         />
 
+        <Route
+          path="/feedback"
+          element={user ? <Feedback /> : <Navigate to="/login" />}
+        />
+
         <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="/explore" element={user ? <Explore /> : <Navigate to="/login" />}/>
+        <Route path="/news" element={user ? <News /> : <Navigate to="/login" />}/>
+
       </Routes>
     </BrowserRouter>
   );
