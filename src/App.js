@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./services/firebase";
-
+import CreatePostPage from "./pages/CreatePostPage";
 import Explore from "./pages/Explore";
 import News from "./pages/News";
 import Login from "./pages/Login";
@@ -66,6 +66,11 @@ function App() {
         />
 
         <Route path="*" element={<Navigate to="/login" />} />
+        <Route
+  path="/create"
+  element={user ? <CreatePostPage /> : <Navigate to="/login" />}
+/>
+
 
       </Routes>
     </BrowserRouter>

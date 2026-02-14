@@ -1,0 +1,137 @@
+/* ==============================
+   FEED MODERN DESIGN
+   ============================== */
+
+   .feed-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px 20px;
+  }
+  
+  /* ==============================
+     CONNECTION STATUS
+     ============================== */
+  
+  .connection-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: 18px;
+    font-weight: 500;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+  }
+  
+  .connection-online {
+    background: #d0dccb;
+    color: #2f3e2f;
+  }
+  
+  .connection-offline {
+    background: #d7c7be;
+    color: #4a2e2e;
+  }
+  
+  .connection-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+  }
+  
+  .connection-online .connection-dot {
+    background: #4caf50;
+  }
+  
+  .connection-offline .connection-dot {
+    background: #c0392b;
+  }
+  
+  /* ==============================
+     POST CARD
+     ============================== */
+  
+  .post-card {
+    border-radius: 26px;
+    padding: 30px;
+    margin-bottom: 35px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+  }
+  
+  .post-card.green {
+    background: #d0dccb;
+  }
+  
+  .post-card.beige {
+    background: #d7c7be;
+  }
+  
+  /* Header */
+  
+  .post-header {
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    opacity: 0.7;
+  }
+  
+  /* Title */
+  
+  .post-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  
+  /* Text */
+  
+  .post-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+  
+  /* Image */
+  
+  .post-image {
+    width: 100%;
+    border-radius: 18px;
+    margin-bottom: 18px;
+    object-fit: cover;
+  }
+  
+  /* Tags */
+  
+  .post-tags {
+    margin-bottom: 15px;
+  }
+  
+  .post-tag {
+    margin-right: 10px;
+    font-size: 0.85rem;
+    opacity: 0.6;
+  }
+  
+  /* Actions */
+  
+  .post-actions {
+    display: flex;
+    gap: 20px;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    font-weight: 500;
+  }
+  
+  .post-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
+  }
+  
+  .post-button:hover {
+    opacity: 0.6;
+  }
+  

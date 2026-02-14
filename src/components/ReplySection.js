@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { db, auth } from "../services/firebase";
+import "../styles/comments.css";
+
 import {
   collection,
   addDoc,
@@ -45,32 +47,34 @@ function ReplySection({ postId, commentId }) {
   };
 
   return (
-    <div style={{ marginLeft: "1.5rem", marginTop: "0.5rem" }}>
+    <div className="reply-section">
+  
       {replies.map(reply => (
-        <div
-          key={reply.id}
-          style={{
-            background: "#eee",
-            padding: "0.5rem",
-            borderRadius: "4px",
-            marginBottom: "0.25rem"
-          }}
-        >
-          <strong>{reply.authorUsername}</strong>
-          <p style={{ margin: 0 }}>{reply.text}</p>
+        <div key={reply.id} className="reply-card">
+          <div className="reply-username">
+            {reply.authorUsername}
+          </div>
+          <p className="reply-text">
+            {reply.text}
+          </p>
         </div>
       ))}
-
-      <form onSubmit={addReply}>
+  
+      <form onSubmit={addReply} className="reply-form">
         <input
-          placeholder="Responder…"
+          className="reply-input"
+          placeholder="Responder..."
           value={text}
           onChange={e => setText(e.target.value)}
         />
-        <button type="submit">Responder</button>
+        <button type="submit" className="reply-btn">
+          Responder
+        </button>
       </form>
+  
     </div>
   );
+  
 }
 
 export default ReplySection;

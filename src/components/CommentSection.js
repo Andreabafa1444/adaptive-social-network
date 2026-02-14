@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { db, auth } from "../services/firebase";
 import ReplySection from "./ReplySection";
+import "../styles/comments.css";
+
 import {
   collection,
   addDoc,
@@ -9,6 +11,7 @@ import {
   onSnapshot,
   serverTimestamp
 } from "firebase/firestore";
+import "../styles/feed.css";
 
 function CommentSection({ postId }) {
   const [comments, setComments] = useState([]);
@@ -41,48 +44,49 @@ function CommentSection({ postId }) {
 
     setText("");
   };
+return (
+  <div className="comment-section">
+    <strong style={{ fontSize: "0.9rem", fontWeight: 500 }}>
+      Comentarios
+    </strong>
 
-  return (
-    <div style={{ marginTop: "1rem" }}>
-      <strong>Comentarios</strong>
+    {comments.length === 0 && (
+      <p style={{ color: "#888", marginTop: "12px" }}>
+        Sé el primero en comentar
+      </p>
+    )}
 
-      {comments.length === 0 && (
-        <p style={{ color: "#666" }}>Sé el primero en comentar</p>
-      )}
-
-      {comments.map(comment => (
-        <div
-          key={comment.id}
-          style={{
-            marginTop: "0.75rem",
-            padding: "0.75rem",
-            background: "#f7f7f7",
-            borderRadius: "6px"
-          }}
-        >
-          <strong>{comment.authorUsername}</strong>
-          <p style={{ margin: "0.25rem 0" }}>{comment.text}</p>
-
-          {/* RESPUESTAS */}
-          <ReplySection
-            postId={postId}
-            commentId={comment.id}
-          />
+    {comments.map(comment => (
+      <div key={comment.id} className="comment-card">
+        <div className="comment-username">
+          {comment.authorUsername}
         </div>
-      ))}
+        <p className="comment-text">
+          {comment.text}
+        </p>
 
-      {/* INPUT PRINCIPAL */}
-      <form onSubmit={addComment} style={{ marginTop: "0.75rem" }}>
-        <input
-          placeholder="Escribe un comentario…"
-          value={text}
-          onChange={e => setText(e.target.value)}
-          style={{ width: "100%" }}
+        <ReplySection
+          postId={postId}
+          commentId={comment.id}
         />
-        <button type="submit">Comentar</button>
-      </form>
-    </div>
-  );
+      </div>
+    ))}
+
+    <form onSubmit={addComment}>
+      <input
+        className="comment-input"
+        placeholder="Escribe un comentario…"
+        value={text}
+        onChange={e => setText(e.target.value)}
+      />
+      <button type="submit" className="comment-btn">
+        Comentar
+      </button>
+    </form>
+  </div>
+);
+
+  
 }
 
 export default CommentSection;

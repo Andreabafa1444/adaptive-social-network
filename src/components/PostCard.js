@@ -1,64 +1,73 @@
+import { useState } from "react";
 import CommentSection from "./CommentSection";
+import "../styles/post.css";
 
 function PostCard({ post, onLike, onSave, connection }) {
+
+  const [showComments, setShowComments] = useState(false);
+
+  if (!post) return null;
+
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        padding: "1rem",
-        marginBottom: "1rem",
-        borderRadius: "6px"
-      }}
-    >
-      <strong>{post.authorUsername}</strong>
+    <div className="post-card">
 
-      {post.title && <h3>{post.title}</h3>}
-      <p>{post.text}</p>
-
-      {post.imageUrl && connection?.online && connection.type !== "2g" && (
-  <img
-    src={post.imageUrl}
-    alt=""
-    style={{ width: "100%", borderRadius: "4px" }}
-  />
-)}
-
-{post.imageUrl && connection?.online && connection.type === "2g" && (
-  <p style={{ fontStyle: "italic" }}>
-    Imagen no cargada por conexión lenta
-  </p>
-)}
-
-{!connection?.online && (
-  <p style={{ fontStyle: "italic" }}>
-    Contenido visual deshabilitado en modo offline
-  </p>
-)}
-
-
-      <div>
-        {post.tags?.map(tag => (
-          <span key={tag} style={{ marginRight: "0.5rem" }}>
-            #{tag}
-          </span>
-        ))}
+      {/* HEADER */}
+      <div className="post-header">
+        <div className="post-username">
+          {post.authorUsername}
+        </div>
       </div>
 
-      <div style={{ marginTop: "0.5rem" }}>
-        <button onClick={() => onLike(post)}>
+      {/* TITLE */}
+      {post.title && (
+        <h3 className="post-title">{post.title}</h3>
+      )}
+
+      {/* TEXT */}
+      <p className="post-text">{post.text}</p>
+
+      {/* IMAGE */}
+      {post.imageUrl && connection?.online && connection.type !== "2g" && (
+        <img
+          src={post.imageUrl}
+          alt=""
+          className="post-image"
+        />
+      )}
+
+      {/* FOOTER ACTIONS */}
+      <div className="post-actions">
+
+        <button
+          className="post-action-btn"
+          onClick={() => onLike(post)}
+        >
           ❤️ {post.likes?.length || 0}
         </button>
 
         <button
-          onClick={() => onSave(post)}
-          style={{ marginLeft: "1rem" }}
+          className="post-action-btn"
+          onClick={() => setShowComments(!showComments)}
         >
-          🔖 Guardar
+          💬
         </button>
+
+        <button
+          className="post-action-btn"
+          onClick={() => onSave(post)}
+        >
+          🔖
+        </button>
+
       </div>
 
-      {/* 👇 AQUÍ VAN LOS COMENTARIOS */}
-      <CommentSection postId={post.id} />
+      {/* COMMENTS DROPDOWN */}
+      {showComments && (
+        <div className="post-comments">
+          <CommentSection postId={post.id} />
+        </div>
+      )}
+
     </div>
   );
 }

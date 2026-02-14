@@ -55,69 +55,67 @@ function Explore() {
 
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <div className="explore-wrapper">
+  
       <Navbar />
-
-      <h2>Explorar por hashtags</h2>
-      <input
-  type="text"
-  placeholder="Buscar por texto o hashtag..."
-  value={search}
-  onChange={(e) => {
-    setSearch(e.target.value);
-    setSelectedTag(null); // 🔹 limpia hashtag si escriben
-  }}
-  style={{
-    width: "100%",
-    padding: "0.5rem",
-    marginBottom: "1rem"
-  }}
-/>
-
-      {/* Hashtags */}
-      <div style={{ marginBottom: "1rem" }}>
-        {allTags.map(tag => (
-          <button
-            key={tag}
-            onClick={() => setSelectedTag(tag)}
-            style={{
-              marginRight: "0.5rem",
-              marginBottom: "0.5rem",
-              backgroundColor:
-                selectedTag === tag ? "#333" : "#eee",
-              color:
-                selectedTag === tag ? "#fff" : "#000",
-              border: "none",
-              padding: "0.4rem 0.6rem",
-              borderRadius: "4px",
-              cursor: "pointer"
-            }}
-          >
-            #{tag}
-          </button>
-        ))}
-      </div>
-
-      {/* Resultados */}
-      {!selectedTag && !search && (
-  <p>
-    Escribe algo o selecciona un hashtag para explorar.
-  </p>
-)}
-
-
-      {filteredPosts.map(post => (
-        <PostCard
-          key={post.id}
-          post={post}
+  
+      <div className="explore-container">
+  
+        <h2 className="explore-title">
+          Explorar contenido
+        </h2>
+  
+        <input
+          type="text"
+          className="explore-search"
+          placeholder="Buscar por texto o hashtag..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setSelectedTag(null);
+          }}
         />
-      ))}
-
-      {!selectedTag && (
-        <p>Selecciona un hashtag para explorar.</p>
-      )}
+  
+        {/* HASHTAGS */}
+        <div className="explore-tags">
+          {allTags.map(tag => (
+            <button
+              key={tag}
+              onClick={() => {
+                setSelectedTag(tag);
+                setSearch("");
+              }}
+              className={`tag-chip ${
+                selectedTag === tag ? "active" : ""
+              }`}
+            >
+              #{tag}
+            </button>
+          ))}
+        </div>
+  
+        {/* ESTADO VACÍO */}
+        {!selectedTag && !search && (
+          <div className="explore-empty">
+            Escribe algo o selecciona un hashtag para explorar.
+          </div>
+        )}
+  
+        {/* RESULTADOS */}
+        <div className="explore-results">
+          {filteredPosts.map(post => (
+            <PostCard
+              key={post.id}
+              post={post}
+            />
+          ))}
+        </div>
+  
+      </div>
+  
     </div>
   );
+  
 }
 
 export default Explore;

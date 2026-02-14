@@ -1,0 +1,69 @@
+/* =========================
+   NAVBAR MODERNO CLEAN
+   ========================= */
+
+   .navbar-wrapper {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1px solid #eaeaea;
+    z-index: 1000;
+  }
+  
+  .navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* Logo */
+  .navbar-logo {
+    font-weight: 600;
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: #111;
+  }
+  
+  /* Links */
+  .navbar-center {
+    display: flex;
+    gap: 28px;
+  }
+  
+  .navbar-center a {
+    text-decoration: none;
+    color: #555;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+  }
+  
+  .navbar-center a:hover {
+    color: #000;
+  }
+  
+  /* Right */
+  .navbar-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Button estilo Stripe */
+  .navbar-btn {
+    background: #111;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  
+  .navbar-btn:hover {
+    background: #333;
+  }
+  

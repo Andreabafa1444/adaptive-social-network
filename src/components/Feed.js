@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { db, auth } from "../services/firebase";
 import PostCard from "./PostCard";
 import useConnection from "../hooks/useConnection";
+import "../styles/feed.css";
 
 import {
   collection,
@@ -20,7 +21,6 @@ function Feed() {
   const [loading, setLoading] = useState(true);
   const connection = useConnection();
 
-  // Escuchar cambios en la autenticación
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
@@ -30,7 +30,6 @@ function Feed() {
     return () => unsubscribeAuth();
   }, []);
 
-  // Cargar posts solo cuando el usuario esté autenticado
   useEffect(() => {
     if (!currentUser) {
       setPosts([]);
@@ -42,24 +41,17 @@ function Feed() {
       orderBy("createdAt", "desc")
     );
 
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        setPosts(
-          snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }))
-        );
-      },
-      (error) => {
-        console.error("Error al cargar posts:", error);
-        // Opcional: mostrar mensaje de error al usuario
-      }
-    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setPosts(
+        snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+      );
+    });
 
     return () => unsubscribe();
-  }, [currentUser]); // ← Solo se ejecuta cuando currentUser cambia
+  }, [currentUser]);
 
   const toggleLike = async (post) => {
     if (!currentUser) return;
@@ -87,45 +79,23 @@ function Feed() {
     });
   };
 
-  // Mostrar loading mientras verifica autenticación
   if (loading) {
-    return <div style={{ padding: "1rem" }}>Cargando...</div>;
+    return <div className="feed-loading">Cargando...</div>;
   }
 
-  // Mostrar mensaje si no está autenticado
   if (!currentUser) {
-    return <div style={{ padding: "1rem" }}>Por favor inicia sesión para ver posts</div>;
+    return (
+      <div className="feed-loading">
+        Por favor inicia sesión para ver publicaciones
+      </div>
+    );
   }
 
   return (
-    <div>
-      {/* 🔵 Estado de conexión visible */}
-      <div
-        style={{
-          padding: "0.5rem",
-          marginBottom: "1rem",
-          borderRadius: "4px",
-          background:
-            !connection.online
-              ? "#ffdddd"
-              : connection.type === "2g" || connection.type === "3g"
-              ? "#fff4cc"
-              : "#ddffdd"
-        }}
-      >
-        {!connection.online && "🔴 Modo Offline"}
-        {connection.online &&
-          (connection.type === "2g" || connection.type === "3g") &&
-          "🟡 Conexión limitada"}
-        {connection.online &&
-          (connection.type === "4g" || connection.type === "unknown") &&
-          "🟢 Conexión estable"}
-      </div>
-
-      {/* Posts */}
+    <div className="feed-list">
       {posts.length === 0 ? (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          No hay posts todavía
+        <div className="feed-empty">
+          No hay publicaciones todavía
         </div>
       ) : (
         posts.map(post => (
