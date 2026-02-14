@@ -1,27 +1,18 @@
 import { useState } from "react";
 import { auth } from "../services/firebase";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
-} from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate, Link } from "react-router-dom";
+import "../styles/login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isRegister, setIsRegister] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      if (isRegister) {
-        await createUserWithEmailAndPassword(auth, email, password);
-      } else {
-        await signInWithEmailAndPassword(auth, email, password);
-      }
-
+      await signInWithEmailAndPassword(auth, email, password);
       navigate("/feed");
     } catch (error) {
       alert(error.message);
@@ -29,36 +20,53 @@ function Login() {
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>{isRegister ? "Registrarse" : "Iniciar sesión"}</h2>
+    <div className="login-wrapper">
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Correo"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <br /><br />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br /><br />
-        <button type="submit">
-          {isRegister ? "Crear cuenta" : "Entrar"}
-        </button>
-      </form>
+      {/* Imagen sección */}
+      <div className="login-image-section">
+        <img src="/images/Login.jpg" alt="Login" />
+      </div>
 
-      <br />
+      {/* Card */}
+      <div className="login-card-container">
+        <div className="login-card p-5">
+          <h3 className="mb-4">Bienvenida</h3>
 
-      <button onClick={() => setIsRegister(!isRegister)}>
-        {isRegister
-          ? "¿Ya tienes cuenta? Inicia sesión"
-          : "¿No tienes cuenta? Regístrate"}
-      </button>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <input
+                type="email"
+                className="form-control rounded-3"
+                placeholder="Correo electrónico"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <input
+                type="password"
+                className="form-control rounded-3"
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <button className="btn btn-dark w-100 rounded-3">
+              Iniciar Sesión
+            </button>
+          </form>
+
+          <div className="mt-4">
+            ¿No tienes cuenta?{" "}
+            <Link to="/register">Crear cuenta</Link>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }

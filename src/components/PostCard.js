@@ -1,6 +1,6 @@
 import CommentSection from "./CommentSection";
 
-function PostCard({ post, onLike, onSave }) {
+function PostCard({ post, onLike, onSave, connection }) {
   return (
     <div
       style={{
@@ -15,13 +15,26 @@ function PostCard({ post, onLike, onSave }) {
       {post.title && <h3>{post.title}</h3>}
       <p>{post.text}</p>
 
-      {post.imageUrl && (
-        <img
-          src={post.imageUrl}
-          alt=""
-          style={{ width: "100%", borderRadius: "4px" }}
-        />
-      )}
+      {post.imageUrl && connection?.online && connection.type !== "2g" && (
+  <img
+    src={post.imageUrl}
+    alt=""
+    style={{ width: "100%", borderRadius: "4px" }}
+  />
+)}
+
+{post.imageUrl && connection?.online && connection.type === "2g" && (
+  <p style={{ fontStyle: "italic" }}>
+    Imagen no cargada por conexión lenta
+  </p>
+)}
+
+{!connection?.online && (
+  <p style={{ fontStyle: "italic" }}>
+    Contenido visual deshabilitado en modo offline
+  </p>
+)}
+
 
       <div>
         {post.tags?.map(tag => (

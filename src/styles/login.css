@@ -1,0 +1,151 @@
+/* BASE */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500&display=swap');
+
+/* =========================
+   MOBILE VERSION AJUSTADA
+   ========================= */
+
+   .login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+  }
+  
+  /* SECCIÓN SUPERIOR MÁS GRANDE */
+  .login-image-section {
+    background: #16181d;
+    height: 420px; /* antes 320px */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    /* curva más profunda */
+    border-bottom-left-radius: 70% 35%;
+    border-bottom-right-radius: 70% 35%;
+  }
+  
+  /* Imagen más grande */
+  .login-image-section img {
+    width: 350px;
+    border-radius: 25px;
+    z-index: 2;
+    margin-top: 120px;   /* 👈 agrega esto */
+  }
+  
+  
+  /* CARD */
+  .login-card-container {
+    display: flex;
+    justify-content: center;
+    padding: 0 25px;
+    margin-top: 40px;  /* antes -120px */
+  }
+  
+  
+  .login-card {
+    width: 100%;
+    max-width: 460px;
+    background: #ffffff;
+    border-radius: 35px;
+    padding: 90px 70px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.12);
+  }
+  
+  
+  /* =========================
+     DESKTOP
+     ========================= */
+     @media (min-width: 992px) {
+
+        .login-wrapper {
+          flex-direction: row;
+          background: #16181d;
+          align-items: center;
+          justify-content: center;
+          padding: 0 80px;
+        }
+      
+        /* Imagen */
+        .login-image-section {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: transparent;
+        }
+      
+        .login-image-section img {
+          width: 75%;
+          max-width: 520px;
+          margin-top: 150px;  
+        }
+      
+        /* Formulario */
+        .login-card-container {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: transparent;
+        }
+      
+        .login-card {
+          background: transparent;   /* 👈 ya no card sólida */
+          box-shadow: none;
+          padding: 0;
+          max-width: 420px;
+        }
+      
+        .login-card h3 {
+          font-size: 2.5rem;
+          color: #ffffff;
+          margin-bottom: 40px;
+          font-weight: 500;
+        }
+      
+        .login-card input {
+          background: transparent;
+          border: none;
+          border-bottom: 1px solid rgba(255,255,255,0.3);
+          border-radius: 0;
+          color: white;
+          padding: 14px 0;
+          margin-bottom: 30px;
+        }
+      
+        .login-card input::placeholder {
+          color: rgba(255,255,255,0.5);
+        }
+      
+        .login-card input:focus {
+          outline: none;
+          border-bottom: 1px solid white;
+          box-shadow: none;
+        }
+      
+        .login-card button {
+          background: transparent;
+          border: 1px solid rgba(255,255,255,0.6);
+          color: white;
+          border-radius: 12px;
+          padding: 15px;
+          margin-top: 30px;
+          transition: all 0.3s ease;
+        }
+      
+        .login-card button:hover {
+          background: white;
+          color: #16181d;
+        }
+      
+        .login-card .mt-4 {
+          color: rgba(255,255,255,0.7);
+        }
+      
+        .login-card .mt-4 a {
+          color: white;
+        }
+      }
+      
