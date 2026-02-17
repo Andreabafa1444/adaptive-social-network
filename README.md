@@ -1,70 +1,105 @@
-# Getting Started with Create React App
+# Adaptive Social Network (ASN)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Adaptive Social Network es una aplicación web progresiva (PWA) desarrollada con React y Firebase, creada con fines académicos para el proyecto de tesina:
 
-## Available Scripts
+**“Diseño y análisis de interfaces adaptativas en aplicaciones web/móviles según condiciones de conectividad.”**
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 📌 Propósito del proyecto
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+El objetivo principal es analizar cómo una interfaz puede adaptarse dinámicamente según la calidad de conexión del usuario (offline, conexión limitada o conexión estable).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+La aplicación simula el comportamiento de una red social moderna tipo Twitter/X, permitiendo:
 
-### `npm test`
+- Publicar contenido
+- Interactuar con likes y comentarios
+- Guardar publicaciones
+- Explorar contenido por hashtags
+- Adaptar visualmente la experiencia según la conectividad
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🌐 URL del proyecto (Producción)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+🔗 https://adaptive-social-network.web.app
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📱 Instalación como aplicación (PWA)
 
-### `npm run eject`
+### Android
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Abrir la URL en Google Chrome.
+2. Presionar los tres puntos (⋮).
+3. Seleccionar **"Agregar a la pantalla principal"**.
+4. Elegir **Instalar**.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+La aplicación se instalará como app independiente.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### iOS
 
-## Learn More
+1. Abrir la URL en Safari.
+2. Presionar el botón **Compartir**.
+3. Seleccionar **"Agregar a Inicio"**.
+4. Confirmar.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+La aplicación funcionará como aplicación web instalada.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## ⚙️ Tecnologías utilizadas
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- React
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Hosting
+- Service Workers (PWA)
+- Network Information API
+- Unsplash API (búsqueda de imágenes)
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🧠 Características adaptativas
 
-### Making a Progressive Web App
+La aplicación detecta automáticamente el estado de conexión:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+🟢 Conexión estable  
+🔴 Sin conexión  
+🟡 Conexión limitada (en pruebas)
 
-### Advanced Configuration
+Según el estado:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Se cargan u ocultan imágenes.
+- Se limita la actualización en tiempo real.
+- Se mantiene contenido en caché para uso offline.
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 📊 Estado actual
 
-### `npm run build` fails to minify
+✔ Autenticación funcional  
+✔ Feed dinámico  
+✔ Sistema de comentarios  
+✔ Instalación como PWA  
+✔ Adaptación básica según conectividad  
+✔ Integración con API externa (Unsplash)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 🎓 Uso académico
+
+Este proyecto fue desarrollado exclusivamente con fines académicos como parte del Seminario de Investigación II de la carrera:
+
+**Ingeniería en Computación Inteligente**
+
+No tiene fines comerciales.
+
+---
+
+## 👩‍💻 Autor
+
+Andrea Margarita Balandrán Félix  
+Generación 2026
