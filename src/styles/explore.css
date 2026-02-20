@@ -1,0 +1,52 @@
+.explore-page {
+    background-color: #fff;
+    min-height: 100vh;
+    padding-top: 70px; /* 👈 Esto evita que el Navbar tape el buscador */
+  }
+  
+  .explore-content {
+    max-width: 600px;
+    margin: 0 auto;
+    border-left: 1px solid #eff3f4;
+    border-right: 1px solid #eff3f4;
+    min-height: calc(100vh - 70px);
+  }
+  
+  .search-header-sticky {
+    position: sticky;
+    top: 70px; /* 👈 Debe ser la misma altura que tu Navbar */
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    padding: 12px 16px;
+    z-index: 10;
+    border-bottom: 1px solid #f7f9f9;
+  }
+  
+  .explore-twitter-input {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: #eff3f4;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s;
+  }
+  
+  .explore-twitter-input:focus {
+    background-color: #fff;
+    border-color: #1d9bf0;
+    box-shadow: 0 0 0 1px #1d9bf0;
+  }
+  
+  /* Estilo de las tendencias tipo Twitter */
+  .trend-row {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    border-bottom: 1px solid #eff3f4;
+  }
+  
+  .trend-row:hover {
+    background-color: #f7f7f7;
+  }

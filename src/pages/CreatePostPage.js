@@ -3,6 +3,7 @@ import { auth, db } from "../services/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import "../styles/createPost.css";
 import { useNavigate } from "react-router-dom";
+import { updateHashtagTrends } from "../services/exploreApi"; // ✅ Importado para actualizar tendencias
 
 const UNSPLASH_KEY = process.env.REACT_APP_UNSPLASH_KEY;
 
@@ -42,23 +43,37 @@ function CreatePost() {
     e.preventDefault();
     if (!text.trim()) return;
 
+    // --- 🔹 NORMALIZACIÓN AGRESIVA DE HASHTAGS 🔹 ---
+    // Convertimos a minúsculas, quitamos espacios y eliminamos el símbolo #
     const tagsArray = tags
       .split(",")
-      .map(tag => tag.trim())
+      .map(tag => tag.toLowerCase().trim().replace("#", ""))
       .filter(tag => tag !== "");
 
-    await addDoc(collection(db, "posts"), {
-      authorId: auth.currentUser.uid,
-      authorEmail: auth.currentUser.email,
-      authorUsername: auth.currentUser.email.split("@")[0],
-      title: title || null,
-      text,
-      imageUrl: selectedImage || null, // ✅ Imagen desde Unsplash
-      tags: tagsArray,
-      createdAt: serverTimestamp()
-    });
+    try {
+      // 1. Guardar el post en Firestore
+      await addDoc(collection(db, "posts"), {
+        authorId: auth.currentUser.uid,
+        authorEmail: auth.currentUser.email,
+        authorUsername: auth.currentUser.email.split("@")[0],
+        title: title || null,
+        text,
+        imageUrl: selectedImage || null, // ✅ Imagen desde Unsplash
+        tags: tagsArray,
+        createdAt: serverTimestamp(),
+        views: 0,
+        likes: []
+      });
 
-    navigate("/feed");
+      // 2. Disparar actualización de tendencias (Conteo Real)
+      if (tagsArray.length > 0) {
+        await updateHashtagTrends(tagsArray);
+      }
+
+      navigate("/feed");
+    } catch (error) {
+      console.error("Error al publicar:", error);
+    }
   };
 
   return (
@@ -154,20 +169,6 @@ function CreatePost() {
               </button>
             </div>
           )}
-
-          {/* -------------------------------------------------- */}
-          {/* 🔹 OPCIÓN MANUAL (comentada por ahora)            */}
-          {/* Útil si luego quieres usar seeds con URL directa  */}
-          {/* -------------------------------------------------- */}
-
-          {/*
-          <input
-            type="text"
-            placeholder="URL de imagen manual"
-            onChange={(e) => setSelectedImage(e.target.value)}
-            className="create-input"
-          />
-          */}
 
           <button type="submit" className="create-button">
             Publicar

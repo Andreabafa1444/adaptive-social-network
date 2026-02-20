@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { db, auth } from "../services/firebase";
 import PostCard from "./PostCard";
-import useConnection from "../hooks/useConnection";
+// Cambiamos useConnection por useNetworkMetrics para que el pill funcione
+import { useNetworkMetrics } from "../services/useNetworkMetrics"; 
 import "../styles/feed.css";
 
 import {
@@ -19,7 +20,8 @@ function Feed() {
   const [posts, setPosts] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const connection = useConnection();
+  // Aquí usamos el hook que sí detecta los 3 estados
+  const connection = useNetworkMetrics(); 
 
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
