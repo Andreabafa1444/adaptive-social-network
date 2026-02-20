@@ -1,68 +1,207 @@
-/* MOBILE FIRST DESIGN */
+:root {
+  --post-radius: 28px;
+  --post-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --verified-color: #00c853;
+  --text-main: #1c1e21;
+  --text-secondary: #65676b;
+}
 
 .post-card {
-    background: white;
-    border-radius: 20px;
-    padding: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-  }
-  
-  .post-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .post-username {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: #222;
-  }
-  
-  .post-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 8px 0;
-    color: #111;
-  }
-  
-  .post-text {
-    font-size: 0.95rem;
-    color: #444;
-    margin-bottom: 12px;
-  }
-  
-  .post-image {
-    width: 100%;
-    border-radius: 16px;
-    margin-bottom: 12px;
-    object-fit: cover;
-  }
-  
-  .post-actions {
-    display: flex;
-    gap: 20px;
-    font-size: 1rem;
-    margin-top: 10px;
-  }
-  
-  .post-action-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 0.95rem;
-    color: #444;
-    transition: 0.2s ease;
-  }
-  
-  .post-action-btn:hover {
-    transform: scale(1.1);
-  }
-  
-  .post-comments {
-    margin-top: 15px;
-    border-top: 1px solid #eee;
-    padding-top: 12px;
-  }
-  
+  background: #ffffff;
+  border-radius: var(--post-radius);
+  padding: 24px;
+  margin-bottom: 25px;
+  box-shadow: var(--post-shadow);
+  border: 1px solid #f0f0f0;
+  position: relative;
+}
+
+/* HEADER PROFESIONAL */
+.post-header-pro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.user-avatar-placeholder {
+  width: 48px;
+  height: 48px;
+  background: #e4e6eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #4b4b4b;
+}
+
+.post-user-info {
+  flex-grow: 1;
+}
+
+.post-username-pro {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #050505;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.verified-badge {
+  color: var(--verified-color);
+  font-size: 1rem;
+}
+
+.post-timestamp {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* MENÚ DE 3 PUNTOS (DROPDOWN) */
+.post-options-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.dropdown-menu-custom {
+  position: absolute;
+  right: 0;
+  top: 45px; /* Bajamos un poco el menú para que no tape el icono */
+  background: #ffffff;
+  border-radius: 20px; /* Redondeado pro igual que los botones del footer */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); /* Sombra más suave y pro */
+  z-index: 1000;
+  min-width: 180px;
+  border: 1px solid #f0f0f0;
+  padding: 8px; /* Espacio interno para que los botones respiren */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dropdown-item {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit; /* Usa la misma letra que la App */
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centrado horizontal */
+  text-align: center;
+  border-radius: 12px;
+}
+
+.dropdown-item:hover {
+  background: #f2f2f2;
+  color: #000;
+}
+
+.dropdown-item.delete {
+  color: #d32f2f; /* Rojo profesional para acciones destructivas */
+}
+
+.dropdown-item.delete:hover {
+  background: #fff1f0;
+}
+
+/* CUERPO Y TEXTO */
+.post-main-body {
+  margin-bottom: 15px;
+}
+
+.post-text-pro {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-main);
+  white-space: pre-wrap;
+}
+
+.see-more-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 5px;
+}
+
+.post-tags {
+  margin: 10px 0;
+}
+
+.tag-badge {
+  color: #007bff;
+  margin-right: 8px;
+  font-size: 0.95rem;
+}
+
+.post-image-pro {
+  width: 100%;
+  border-radius: 22px;
+  margin-top: 12px;
+  border: 1px solid #f0f0f0;
+  object-fit: cover;
+}
+
+/* ACCIONES PILL-STYLE */
+.post-actions-pro {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #f2f2f2;
+  margin-top: 20px;
+  padding-top: 15px;
+}
+
+.action-group {
+  display: flex;
+  gap: 12px;
+}
+
+.post-btn-pro {
+  background: #f0f2f5;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4b4b4b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+}
+
+.post-btn-pro:hover {
+  background: #e4e6eb;
+}
+.options-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 1.5rem;
+  color: #65676b;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.options-btn:hover {
+  background: #f2f2f2;
+}
+.options-btn:focus {
+  outline: none; /* Asegura que no salga el cuadro negro de selección */
+  background: #ebebeb;
+}
