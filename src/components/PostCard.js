@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { doc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
-import { db, auth } from "../services/firebase"; // <-- Importamos auth para la seguridad
+import { doc, updateDoc, deleteDoc, serverTimestamp, increment } from "firebase/firestore";
+import { db, auth } from "../services/firebase"; 
 import CommentSection from "./CommentSection";
 import Swal from "sweetalert2";
 import "../styles/post.css";
@@ -10,8 +10,13 @@ function PostCard({ post, onLike, onSave, connection }) {
   const [showComments, setShowComments] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-
-  // Estados para Edición y Unsplash (Mantenemos tu lógica intacta)
+  
+  // 📡 Leemos el estado del Hook de métricas
+  const networkStatus = connection?.status || "fast";
+  
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [showHeart, setShowHeart] = useState(false);
+  
   const [title, setTitle] = useState(post?.title || "");
   const [text, setText] = useState(post?.text || "");
   const [tags, setTags] = useState(post?.tags?.join(", ") || "");
@@ -19,15 +24,26 @@ function PostCard({ post, onLike, onSave, connection }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
 
-  // Lógica de "Ver más"
   const LIMIT = 150;
-  const isLongText = post.text.length > LIMIT;
-  const textToShow = isExpanded ? post.text : post.text.substring(0, LIMIT);
+  const isLongText = post.text?.length > LIMIT;
+  const textToShow = isExpanded ? post.text : post.text?.substring(0, LIMIT);
 
-  // COMPROBACIÓN DE SEGURIDAD: ¿Eres el dueño del post?
   const isOwner = auth.currentUser?.uid === post.authorId;
 
-  // Lógica de búsqueda Unsplash
+  useEffect(() => {
+    const registerView = async () => {
+      if (connection?.online) {
+        try {
+          const postRef = doc(db, "posts", post.id);
+          await updateDoc(postRef, { views: increment(1) });
+        } catch (error) {
+          console.error("Error al registrar vista:", error);
+        }
+      }
+    };
+    registerView();
+  }, [post.id, connection?.online]);
+
   const fetchUnsplash = async (q) => {
     try {
       const resp = await fetch(`https://api.unsplash.com/search/photos?query=${q}&client_id=${process.env.REACT_APP_UNSPLASH_KEY || 'TU_KEY'}`);
@@ -43,21 +59,27 @@ function PostCard({ post, onLike, onSave, connection }) {
     } else { setResults([]); }
   }, [searchQuery]);
 
+  const handleDoubleTap = () => {
+    onLike(post);
+    setShowHeart(true);
+    setTimeout(() => setShowHeart(false), 800);
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
-    if (!isOwner) return; // Validación extra
+    if (!isOwner) return;
     const postRef = doc(db, "posts", post.id);
     const tagsArr = tags.split(",").map(t => t.trim()).filter(t => t !== "");
     await updateDoc(postRef, { title, text, tags: tagsArr, imageUrl, updatedAt: serverTimestamp() });
     setIsEditing(false);
-    Swal.fire({ icon: 'success', title: '¡Actualizado!', toast: true, position: 'top-end', timer: 2000 });
+    Swal.fire({ icon: 'success', title: '¡Actualizado!', toast: true, position: 'top-end', timer: 2000, showConfirmButton: false });
   };
 
   const handleDelete = async () => {
     setShowDropdown(false);
-    if (!isOwner) return; // Validación extra
-    if (!connection.online) return Swal.fire('Offline', 'Red inestable', 'error');
-    const res = await Swal.fire({ title: '¿Eliminar?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#000' });
+    if (!isOwner) return;
+    if (!connection?.online) return Swal.fire('Offline', 'Red inestable', 'error');
+    const res = await Swal.fire({ title: '¿Eliminar?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#000', confirmButtonText: 'Sí, eliminar' });
     if (res.isConfirmed) await deleteDoc(doc(db, "posts", post.id));
   };
 
@@ -70,7 +92,7 @@ function PostCard({ post, onLike, onSave, connection }) {
             <div className="create-title">Editar publicación</div>
           </div>
           <form onSubmit={handleUpdate}>
-            <input className="create-input" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <input className="create-input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Título" />
             <textarea className="create-textarea" value={text} onChange={(e) => setText(e.target.value)} rows="5" />
             <input className="create-input" placeholder="Buscar nueva imagen..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             <div className="image-results" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', margin: '10px 0' }}>
@@ -87,10 +109,15 @@ function PostCard({ post, onLike, onSave, connection }) {
             <div className="user-avatar-placeholder">{post.authorUsername?.charAt(0).toUpperCase()}</div>
             <div className="post-user-info">
               <div className="post-username-pro">{post.authorUsername} <span className="verified-badge">✔</span></div>
-              <div className="post-timestamp">Publicado • Hace 3m</div>
+              <div className="post-timestamp">
+                Hace 3m • 👁️ {post.views || 0} vistas • 
+                <span className={`network-badge-pill ${networkStatus}`}>
+                  {networkStatus === "fast" ? "FAST" : 
+                   networkStatus === "unstable" ? "INTERMEDIO" : "OFFLINE"}
+                </span>
+              </div>
             </div>
             
-            {/* EL CAMBIO: Solo mostramos el menú si isOwner es true */}
             {isOwner && (
               <div className="post-options-container">
                 <button className="options-btn" onClick={() => setShowDropdown(!showDropdown)}>⋮</button>
@@ -107,7 +134,7 @@ function PostCard({ post, onLike, onSave, connection }) {
               </div>
             )}
           </div>
-
+  
           <div className="post-main-body">
             {post.title && <h3 className="post-title" style={{marginTop: 0}}>{post.title}</h3>}
             <p className="post-text-pro">
@@ -122,11 +149,32 @@ function PostCard({ post, onLike, onSave, connection }) {
             <div className="post-tags">
               {post.tags?.map((t, i) => <span key={i} className="tag-badge">#{t}</span>)}
             </div>
-            {post.imageUrl && connection?.online && connection.type !== "2g" && (
-              <img src={post.imageUrl} alt="Post" className="post-image-pro" />
-            )}
+            
+            <div className="image-container" onDoubleClick={handleDoubleTap}>
+              {showHeart && <div className="floating-heart">❤️</div>}
+              
+              {post.imageUrl && connection?.online && networkStatus !== "critical" ? (
+                <img 
+                  src={post.imageUrl} 
+                  alt="Post" 
+                  loading={networkStatus === "unstable" ? "lazy" : "eager"}
+                  className={`post-image-pro ${isLoaded ? 'image-loaded' : 'image-loading'}`}
+                  onLoad={() => setIsLoaded(true)}
+                  style={{ 
+                    filter: !isLoaded && networkStatus === "unstable" ? "blur(10px)" : "none",
+                    transition: "filter 0.5s ease"
+                  }}
+                />
+              ) : (
+                post.imageUrl && (
+                  <div className="offline-placeholder-pro">
+                    <p>📉 Modo Resiliente: Imagen pausada</p>
+                  </div>
+                )
+              )}
+            </div>
           </div>
-
+  
           <div className="post-actions-pro">
             <div className="action-group">
               <button className="post-btn-pro" onClick={() => onLike(post)}>❤️ {post.likes?.length || 0}</button>
@@ -136,7 +184,7 @@ function PostCard({ post, onLike, onSave, connection }) {
           </div>
         </>
       )}
-      {showComments && <div className="post-comments"><CommentSection postId={post.id} connection={connection} /></div>}
+      {showComments && <CommentSection postId={post.id} connection={connection} />}
     </div>
   );
 }
