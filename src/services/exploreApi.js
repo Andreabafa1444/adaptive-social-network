@@ -1,24 +1,24 @@
 import { db } from "./firebase";
 import { collection, query, orderBy, limit, getDocs, doc, setDoc, where } from "firebase/firestore";
 
+// Las llaves solo se usan si decides volver a llamar a la API directa, 
+// pero ahora usamos la inyección de Python.
 const API_KEY = process.env.REACT_APP_EXPLORE_API_KEY;
 
 /**
  * 1. OBTENER TOP 10 TENDENCIAS (CONTEO REAL)
- * Escanea todos los posts para que el ranking sea 100% exacto.
+ * Requerido por Explorar.js
  */
 export const getTrendingNews = async (providedKey) => {
   if (providedKey !== API_KEY) throw new Error("401: No autorizado.");
 
   try {
-    // Escaneo de todos los posts para contar hashtags reales
     const allPosts = await getDocs(collection(db, "posts"));
     const tagCounts = {};
 
     allPosts.forEach(postDoc => {
       const postTags = postDoc.data().tags || [];
       postTags.forEach(tag => {
-        // Normalización: minúsculas y sin símbolos
         const clean = tag.toLowerCase().trim().replace("#", "");
         if (clean) {
           tagCounts[clean] = (tagCounts[clean] || 0) + 1;
@@ -26,7 +26,6 @@ export const getTrendingNews = async (providedKey) => {
       });
     });
 
-    // Sincronizar la colección 'trends' con los nuevos conteos
     await Promise.all(Object.entries(tagCounts).map(([name, count]) =>
       setDoc(doc(db, "trends", name), { 
         name, 
@@ -35,7 +34,6 @@ export const getTrendingNews = async (providedKey) => {
       }, { merge: true })
     ));
 
-    // Traer el Top 10 real de mayor a menor
     const q = query(collection(db, "trends"), orderBy("count", "desc"), limit(10));
     const snap = await getDocs(q);
 
@@ -51,6 +49,7 @@ export const getTrendingNews = async (providedKey) => {
 
 /**
  * 2. ACTUALIZAR TENDENCIAS (Para creación de posts)
+ * Requerido por CreatePostPage.js
  */
 export const updateHashtagTrends = async (tagsArray) => {
   if (!tagsArray || tagsArray.length === 0) return;
@@ -70,16 +69,40 @@ export const updateHashtagTrends = async (tagsArray) => {
     });
     await Promise.all(batchPromises);
   } catch (error) {
-    console.error("Error al actualizar:", error);
+    console.error("Error al actualizar hashtags:", error);
   }
 };
 
+/**
+ * 3. FETCH NEWS DESDE FIRESTORE (Lógica de Tesis)
+ * Consume las noticias globales inyectadas por el script de Python.
+ */
 export const fetchTopNews = async () => {
-  return [{
-    title: "Algoritmo de Conteo Real",
-    description: "Sincronización automática de metadatos basada en posts.",
-    source: { name: "Adaptive Tech" },
-    publishedAt: new Date().toISOString(),
-    url: "#"
-  }];
+  try {
+    const newsRef = collection(db, "noticias_tesis");
+    
+    // CAMBIO AQUÍ: Subimos el límite a 20 o 30 y ordenamos por fecha
+    const q = query(
+      newsRef, 
+      orderBy("publishedAt", "desc"), // Lo más nuevo primero
+      limit(30) // Aquí es donde liberas el flujo
+    ); 
+    
+    const querySnapshot = await getDocs(q);
+    const articles = querySnapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id
+    }));
+
+    if (articles.length === 0) throw new Error("Firestore vacío");
+
+    return articles;
+  } catch (error) {
+    console.error("Error al leer noticias globales:", error);
+    return [{
+      title: "Contenido en sincronización",
+      description: "Sincronizando con el motor de Python...",
+      source: { name: "Adaptive System" }
+    }];
+  }
 };

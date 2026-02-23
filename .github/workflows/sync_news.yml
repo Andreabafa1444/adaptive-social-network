@@ -1,0 +1,29 @@
+name: News Sync Bot
+
+on:
+  schedule:
+    - cron: '0 */12 ***' # Esto significa: Correr todos los días en intervalos de 12 horas
+  workflow_dispatch: # Esto permite que tú lo corras a mano desde GitHub si quieres
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install firebase-admin newsapi-python
+
+      - name: Run sync script
+        env:
+          # Le pasamos la llave desde la caja fuerte de GitHub
+          FIREBASE_KEY_JSON: ${{ secrets.FIREBASE_KEY }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }} 
+        run: python sync_news.py
