@@ -1,46 +1,72 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
-// Valores aproximados que DevTools throttling impone en downlink (Mbps):
-// Fast 4G  → downlink ~4 Mbps  (sin throttling, o muy alto)
-// Slow 4G  → downlink ~1.5 Mbps
-// 3G       → downlink ~0.75 Mbps
-// Offline  → navigator.onLine = false
+function randomSeconds() {
+  const secs = Math.floor(Math.random() * 46) + 15; // 15–60 segundos
+  console.log(`🔄 [useConnection] próximo cambio en ${secs}s`);
+  return secs * 1000;
+}
 
-function getStatus() {
-  if (!navigator.onLine) return "offline";
-
-  const conn = navigator.connection;
-  if (!conn) return "fast"; // si el browser no soporta la API, asumimos fast
-
-  const downlink = conn.downlink; // en Mbps
-
-  if (downlink >= 2) return "fast";      // Fast 4G: ≥2 Mbps
-  if (downlink >= 0.5) return "slow";    // Slow 4G / 3G: entre 0.5 y 2 Mbps
-  if (downlink > 0) return "slow";       // cualquier cosa con señal pero lenta
-  return "offline";                       // downlink = 0 = sin datos
+function isOnline() {
+  return navigator.onLine;
 }
 
 export default function useConnection() {
-  const [status, setStatus] = useState(getStatus);
+  const [status, setStatus] = useState(() => {
+    const initial = isOnline() ? "fast" : "offline";
+    console.log(`📡 [useConnection] estado inicial: ${initial}`);
+    return initial;
+  });
 
-  useEffect(() => {
-    const update = () => setStatus(getStatus());
+  const timerRef = useRef(null);
+  // Guardamos el estado actual en un ref para que scheduleToggle siempre lo lea fresco
+  const statusRef = useRef(status);
 
-    window.addEventListener("online", update);
-    window.addEventListener("offline", update);
+  const scheduleToggle = useCallback(() => {
+    clearTimeout(timerRef.current); // limpia cualquier timer anterior
 
-    if (navigator.connection) {
-      navigator.connection.addEventListener("change", update);
-    }
+    const delay = randomSeconds();
 
-    return () => {
-      window.removeEventListener("online", update);
-      window.removeEventListener("offline", update);
-      if (navigator.connection) {
-        navigator.connection.removeEventListener("change", update);
+    timerRef.current = setTimeout(() => {
+      if (!isOnline()) {
+        console.log("📡 [useConnection] sin internet, no alterno");
+        return;
       }
-    };
+      const next = statusRef.current === "fast" ? "slow" : "fast";
+      console.log(`📡 [useConnection] cambiando: ${statusRef.current} → ${next}`);
+      statusRef.current = next;
+      setStatus(next);
+      scheduleToggle(); // programa el siguiente
+    }, delay);
   }, []);
 
-  return status; // devuelve directamente: "fast" | "slow" | "offline"
+  useEffect(() => {
+    if (isOnline()) {
+      scheduleToggle();
+    }
+
+    const handleOffline = () => {
+      console.log("📡 [useConnection] red caída → offline");
+      clearTimeout(timerRef.current);
+      statusRef.current = "offline";
+      setStatus("offline");
+    };
+
+    const handleOnline = () => {
+      console.log("📡 [useConnection] red restaurada → fast");
+      statusRef.current = "fast";
+      setStatus("fast");
+      scheduleToggle();
+    };
+
+    window.addEventListener("offline", handleOffline);
+    window.addEventListener("online", handleOnline);
+
+    return () => {
+      clearTimeout(timerRef.current);
+      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", handleOnline);
+    };
+  }, [scheduleToggle]);
+
+  return status;
 }
