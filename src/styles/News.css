@@ -1,269 +1,303 @@
-.container { max-width: 800px; margin: 0 auto; padding: 20px; }
-.news-header { margin-top: 80px; margin-bottom: 30px; }
-.title-section { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+/* ============================================================
+   ESTRUCTURA GENERAL Y HEADER (COMÚN A TODAS LAS INTERFACES)
+   ============================================================ */
 
-.topics-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
-.topics-bar button { padding: 8px 16px; border-radius: 20px; border: 1px solid #ddd; background: #fff; cursor: pointer; }
-.topics-bar button.active { background: #000; color: #fff; }
-
-/* CARD HORIZONTAL (Como tu imagen) */
-.social-card-mini {
-  display: flex;
-  gap: 15px;
-  background: #fff;
-  padding: 15px 0;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-}
-
-.card-image-box { width: 100px; height: 100px; flex-shrink: 0; }
-.card-image-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
-
-.card-content-box { flex-grow: 1; }
-.card-content-box h3 { font-size: 1.1rem; margin: 5px 0; line-height: 1.3; font-weight: 700; }
-.source-label { font-size: 0.75rem; color: #666; font-weight: 600; }
-.card-footer-mini { font-size: 0.8rem; color: #999; }
-
-/* MODAL */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 3000; }
-.modal-content { background: #fff; width: 95%; max-width: 600px; max-height: 90vh; border-radius: 20px; overflow-y: auto; position: relative; }
-.modal-hero { width: 100%; height: 250px; object-fit: cover; }
-.modal-body { padding: 25px; }
-.close-btn { position: absolute; top: 15px; right: 15px; background: #fff; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; font-size: 1.2rem; }
-/* CONTENEDOR Y HEADER */
-.container { max-width: 800px; margin: 0 auto; padding: 20px; }
-.news-header { margin-top: 80px; margin-bottom: 30px; }
-.title-section { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-
-/* TÓPICOS */
-.topics-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-.topics-bar button { padding: 8px 18px; border-radius: 20px; border: 1px solid #ddd; background: #fff; cursor: pointer; transition: 0.2s; }
-.topics-bar button.active { background: #000; color: #fff; border-color: #000; }
-
-/* FEED DE CARTAS MINI */
-.social-card-mini {
-  display: flex; gap: 15px; background: #fff; padding: 15px 0;
-  border-bottom: 1px solid #eee; cursor: pointer; transition: 0.2s;
-}
-.social-card-mini:hover { opacity: 0.8; }
-.card-image-box { width: 100px; height: 100px; flex-shrink: 0; }
-.card-image-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
-.card-content-box h3 { font-size: 1.1rem; margin: 5px 0; line-height: 1.3; font-weight: 700; color: #1a1a1a; }
-.source-label { font-size: 0.75rem; color: #666; font-weight: 600; }
-.card-footer-mini { font-size: 0.8rem; color: #999; }
-
-/* MODAL ESTILO SOCIAL (NUEVO) */
-.modal-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
-  display: flex; justify-content: center; align-items: center; z-index: 3000;
-}
-
-.modal-content-social {
-  background: white; width: 90%; max-width: 600px; border-radius: 28px;
-  overflow: hidden; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-  animation: modalIn 0.3s ease-out;
-}
-
-@keyframes modalIn {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
+   .container { 
+    max-width: 800px; 
+    margin: 0 auto; 
+    padding: 20px; 
+  }
+  
+  .news-header { 
+    margin-top: 80px; 
+    margin-bottom: 30px; 
+  }
+  
+  .title-section { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    margin-bottom: 15px; 
+  }
+  
+  /* Tópicos con scroll horizontal */
+  .topics-bar { 
+    display: flex; 
+    gap: 10px; 
+    overflow-x: auto; 
+    padding-bottom: 10px; 
+    scrollbar-width: none; 
+  }
+  
+  .topics-bar button { 
+    padding: 8px 18px; 
+    border-radius: 20px; 
+    border: 1px solid #ddd; 
+    background: #fff; 
+    cursor: pointer; 
+    transition: 0.2s; 
+  }
+  
+  .topics-bar button.active { 
+    background: #000; 
+    color: #fff; 
+    border-color: #000; 
+  }
+  
+  /* ============================================================
+     ITERACIÓN 1: INTERFAZ ALTA (FAST) - DISEÑO COMPLETO
+     ============================================================ */
+  
+  .social-card-mini {
+    display: flex; 
+    gap: 15px; 
+    background: #fff; 
+    padding: 15px 0;
+    border-bottom: 1px solid #eee; 
+    cursor: pointer; 
+    transition: 0.2s;
+  }
+  
+  .social-card-mini:hover { 
+    opacity: 0.8; 
+  }
+  
+  /* Caja de imagen estándar */
+  .card-image-box { 
+    width: 100px; 
+    height: 100px; 
+    flex-shrink: 0; 
+  }
+  
+  .card-image-box img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    border-radius: 12px; 
+  }
+  
+  .card-content-box h3 { 
+    font-size: 1.1rem; 
+    margin: 5px 0; 
+    line-height: 1.3; 
+    font-weight: 700; 
+    color: #1a1a1a; 
+  }
+  
+  .source-label { 
+    font-size: 0.75rem; 
+    color: #666; 
+    font-weight: 600; 
+  }
+  
+  .card-footer-mini { 
+    font-size: 0.8rem; 
+    color: #999; 
+  }
+  
+  /* Modal Estándar Social */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+    display: flex; justify-content: center; align-items: center; z-index: 3000;
+  }
+  
+  .modal-content-social {
+    background: white; width: 90%; max-width: 600px; border-radius: 28px;
+    overflow: hidden; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    animation: modalIn 0.3s ease-out;
+  }
+  
+  .modal-image-container { 
+    padding: 15px 15px 0 15px; 
+  }
+  
+  .modal-img-social { 
+    width: 100%; 
+    height: auto; 
+    max-height: 350px; 
+    object-fit: cover; 
+    border-radius: 20px; 
+  }
+  
+  .modal-body-social { 
+    padding: 25px; 
+  }
+  
+  /* ============================================================
+     ITERACIÓN 2: INTERFAZ MEDIA (SLOW) - OPTIMIZACIÓN
+     ============================================================ */
+  
+  /* En el modo Slow, el JS elimina la imagen del modal. 
+     Ajustamos el texto para que sea el protagonista */
+  .mode-slow .modal-title-social {
+    font-size: 26px; /* Más grande al no haber imagen */
+    text-align: center;
+  }
+  
+  .mode-slow .modal-text-social {
+    font-size: 18px; /* Texto más legible */
+    line-height: 1.7;
+    color: #222;
+  }
+  
+  /* Efecto visual en la lista para imágenes slow (lazy) */
+  .mode-slow .card-image-box img {
+    filter: grayscale(0.4);
+    opacity: 0.9;
+  }
+  
+  /* ============================================================
+     ITERACIÓN 3: INTERFAZ BAJA (OFFLINE) - TEXTO PLANO
+     ============================================================ */
+  
+  /* Transformamos la card en una lista de lectura directa */
+  .offline-card {
+    flex-direction: column; /* Apilamos contenido */
+    gap: 5px;
+    padding: 20px 0;
+    cursor: default; /* Indicamos que no hay navegación */
+  }
+  
+  /* Estilo de texto plano sin distracciones visuales */
+  .mode-offline .card-content-box h3 {
+    font-size: 1.3rem;
+    color: #000;
+    margin-bottom: 8px;
+  }
+  
+  .mode-offline .news-description {
+    display: block;
+    font-size: 15px;
+    color: #444;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  
+  /* Ocultamos elementos de interacción que requieren red */
+  .mode-offline .card-footer-mini span:last-child {
+    display: none; 
+  }
+  
+  /* ============================================================
+     COMPONENTES COMPARTIDOS: PILLS, COMENTARIOS Y BANNER
+     ============================================================ */
+  
+  /* Píldoras de interacción (Likes/Guardar) */
+  .modal-footer-social-pill-container {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 15px; margin-top: 10px;
+  }
+  
+  .interaction-pill-button {
+    background-color: #f0f2f5; padding: 8px 16px; border-radius: 25px;
+    display: flex; align-items: center; gap: 8px; cursor: pointer;
+    transition: 0.2s; border: none; font-weight: 600;
+  }
+  
+  .interaction-pill-button:hover { background-color: #e4e6e9; }
+  
+  /* Modal de Comentarios */
+  .modal-content-comments {
+    background: white; width: 90%; max-width: 500px; height: 80vh;
+    border-radius: 28px; display: flex; flex-direction: column; overflow: hidden;
+  }
+  
+  .comments-list { 
+    flex-grow: 1; padding: 20px; overflow-y: auto; background: #f9f9f9; 
+  }
+  
+  .comment-bubble { 
+    background: white; padding: 15px; border-radius: 18px; 
+    margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+  }
+  
+  /* Banner de conexión adaptable */
+  .connection-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    margin-left: 10px;
+  }
+  
+  /* Estilos de pulso para el punto de conexión */
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+  
+  .connection-banner span:first-child {
+    animation: pulse 2s infinite;
+  }
+  /* --- CORRECCIÓN DE LA "X" DE CIERRE --- */
 .close-modal-social {
-  position: absolute; top: 25px; right: 25px; background: rgba(255, 255, 255, 0.9);
-  border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 20px;
-  cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;
-}
-
-.modal-image-container { padding: 15px 15px 0 15px; }
-.modal-img-social { width: 100%; height: auto; max-height: 350px; object-fit: cover; border-radius: 20px; }
-
-.modal-body-social { padding: 25px; }
-.modal-title-social { font-size: 22px; font-weight: 800; color: #1a1a1a; margin-bottom: 15px; line-height: 1.2; }
-.modal-text-social { font-size: 16px; line-height: 1.6; color: #444; margin-bottom: 20px; }
-.modal-divider { height: 1px; background: #f0f0f0; margin: 20px 0; }
-
-.modal-footer-social { display: flex; gap: 25px; }
-.interaction-item { display: flex; align-items: center; gap: 8px; color: #444; font-weight: 600; }
-/* Estilos para el Modal de Comentarios */
-.modal-content-comments {
-  background: white;
-  width: 90%;
-  max-width: 500px;
-  height: 80vh;
-  border-radius: 28px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: slideUp 0.3s ease-out;
-}
-
-.comments-header {
-  padding: 20px;
-  border-bottom: 1px solid #f0f0f0;
+  position: absolute;
+  top: 15px;
+  left: 15px; /* Según la imagen, la X está arriba a la izquierda */
+  background: #fff;
+  border: 1px solid #ddd;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px; /* Forma cuadrada redondeada como en la imagen */
+  font-size: 18px;
   display: flex;
   align-items: center;
-  gap: 15px;
-}
-
-.back-btn {
-  background: none;
-  border: none;
-  font-weight: bold;
+  justify-content: center;
   cursor: pointer;
-  color: #666;
+  z-index: 100;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.comments-list {
-  flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
-  background: #f9f9f9;
-}
-
-.comment-bubble {
-  background: white;
-  padding: 15px;
-  border-radius: 18px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.comment-bubble strong {
-  display: block;
-  font-size: 0.9rem;
-  margin-bottom: 5px;
-  color: #333;
-}
-
-.comment-bubble p {
-  margin: 0;
-  font-size: 1rem;
-  color: #555;
-}
-
-.comment-bubble small {
-  font-size: 0.75rem;
-  color: #aaa;
-}
-
-.comment-input-area {
-  padding: 20px;
-  border-top: 1px solid #eee;
+/* --- ALINEACIÓN DE CORAZÓN Y COMENTARIOS LADO A LADO --- */
+.interaction-pills-group {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: column; /* Apilados verticalmente a la izquierda como la imagen */
+  gap: 8px;
 }
 
-.comment-input-area textarea {
-  width: 100%;
-  height: 80px;
-  border-radius: 15px;
-  border: 1px solid #ddd;
-  padding: 12px;
-  resize: none;
-}
-
-.comment-input-area button {
-  align-self: flex-end;
-  background: #000;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-/* Contenedor principal de la barra de interacción */
 .modal-footer-social-pill-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 15px;
-  margin-top: 10px;
+  justify-content: space-between; /* Grupo izquierda e icono guardar derecha */
+  align-items: flex-end; /* Alineados a la base */
+  margin-top: 15px;
 }
 
-.interaction-pills-left {
-  display: flex;
-  gap: 10px;
-}
-
-/* Estilo de la "Píldora" individual */
+/* --- ESTILO DE PÍLDORAS (Fondo gris suave) --- */
 .interaction-pill-button {
-  background-color: #f0f2f5; /* Gris suave del feed */
-  padding: 8px 16px;
-  border-radius: 25px; /* Forma de píldora */
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  border: none;
-}
-
-.interaction-pill-button:hover {
-  background-color: #e4e6e9; /* Un poco más oscuro al pasar el mouse */
-}
-
-.interaction-pill-button .icon {
-  font-size: 1.1rem;
-}
-
-.interaction-pill-button .count, 
-.interaction-pill-button .text {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #050505;
-}
-
-/* Ajuste específico para el botón de Guardar a la derecha */
-.save-pill {
-  margin-left: auto;
   background-color: #f0f2f5;
-}
-.connection-banner {
-  display: inline-flex; /* Cambiado de flex a inline-flex para que sea una píldora */
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px; /* Ajuste para que se vea más compacto */
-  border-radius: 20px; /* Bordes totalmente redondeados */
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-left: 15px; /* Espacio respecto al texto "Explorar Mundo" */
+  gap: 6px;
+  width: fit-content;
 }
 
-/* ONLINE / FAST - Verde suave */
-.connection-banner.online {
-  background: #e6f4ea;
-  color: #1e7e34;
-  border: 1px solid #ceead6;
+/* --- ENLACE A NOTA COMPLETA --- */
+.full-note-link {
+  display: block;
+  margin-top: 15px;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
 }
 
-/* OFFLINE - Rojo suave */
-.connection-banner.offline {
-  background: #fdecea;
-  color: #c5221f;
-  border: 1px solid #fad2cf;
+.full-note-link:hover {
+  text-decoration: underline;
 }
 
-.connection-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: currentColor;
-  /* Animación de pulso para que se vea vivo */
-  animation: pulse 2s infinite;
+/* --- ITERACIÓN MEDIA (SLOW): Quitar imagen y centrar --- */
+.mode-slow .modal-image-container {
+  display: none;
 }
 
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
+.mode-slow .modal-body-social {
+  text-align: center;
+  padding: 40px 25px;
 }
