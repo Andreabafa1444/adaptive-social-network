@@ -29,4 +29,9 @@
     border-radius: 50%;
     background: currentColor;
   }
-  
+  /* Estilo para 3G / Conexión Limitada */
+.connection-banner.limited {
+  background: #fff4e5; /* Naranja/Amarillo muy suave */
+  color: #663c00;
+  border: 1px solid #ffe2b3;
+}

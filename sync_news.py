@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# 1. AUTENTICACIÓN
+# 1. AUTENTICACIÓN (Igual a la tuya)
 try:
     if "FIREBASE_KEY_JSON" in os.environ:
         key_data = json.loads(os.environ["FIREBASE_KEY_JSON"])
@@ -27,7 +27,7 @@ except Exception as e:
 
 newsapi = NewsApiClient(api_key=os.getenv("NEWS_API_KEY"))
 
-# 2. TUS 5 CATEGORÍAS (NO SE MOVIERON)
+# 2. CATEGORÍAS (Tus categorías originales)
 categorias_tesis = {
     "Tecnología": "tecnología OR gaming OR IA",
     "Política": "política OR gobierno",
@@ -37,7 +37,7 @@ categorias_tesis = {
 }
 
 try:
-    print("🚀 Sincronizando noticias...")
+    print("🚀 Sincronizando noticias con soporte social...")
     for nombre_cat, query_busqueda in categorias_tesis.items():
         query_final = f'({query_busqueda}) AND (Mexico OR "Estados Unidos")' 
         response = newsapi.get_everything(q=query_final, language='es', sort_by='publishedAt', page_size=15)
@@ -47,30 +47,36 @@ try:
             titulo = art.get("title")
             if not titulo or len(titulo) < 15: continue
 
-            # EL CAMBIO PARA NO REPETIR EN ALL: ID único basado en el título
+            # ID ÚNICO: Vital para guardar noticias y que no se pierdan los likes
             doc_id = hashlib.sha256(titulo.encode('utf-8')).hexdigest()[:20]
             doc_ref = db.collection("noticias_tesis").document(doc_id)
             doc_snap = doc_ref.get()
 
             if doc_snap.exists:
-                # Si ya existe, solo añadimos la categoría a la lista 'categories'
+                # 🔄 SI EXISTE: Solo actualizamos categorías. 
+                # NO tocamos 'likes' ni 'comments' para no borrarlos.
                 data_old = doc_snap.to_dict()
                 cats = data_old.get("categories", [])
                 if nombre_cat not in cats:
                     cats.append(nombre_cat)
                     doc_ref.update({"categories": cats})
             else:
-                # Si es nueva, la creamos con la lista inicial de categorías
+                # ✨ SI ES NUEVA: Creamos el documento con campos sociales en CERO
                 doc_ref.set({
+                    "id": doc_id, # Guardamos el ID dentro para que React lo use fácil
                     "title": titulo,
                     "description": art.get("description") or "Contenido adaptativo...",
                     "url": art.get("url"),
                     "urlToImage": art.get("urlToImage"),
                     "source": {"name": art.get("source", {}).get("name")},
                     "publishedAt": art.get("publishedAt"),
-                    "categories": [nombre_cat], # Se manda como lista para el filtro
-                    "fetchedAt": firestore.SERVER_TIMESTAMP 
+                    "categories": [nombre_cat],
+                    "fetchedAt": firestore.SERVER_TIMESTAMP,
+                    # CAMPOS PARA INTERACCIÓN REAL:
+                    "likes": 0,
+                    "commentCount": 0,
+                    "savedBy": [] # Lista de IDs de usuarios que la guardaron
                 })
-    print("✅ Base de datos actualizada sin duplicados en All.")
+    print("✅ Base de datos lista para Likes y Comentarios.")
 except Exception as e:
     print(f"Error: {e}")

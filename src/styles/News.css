@@ -86,3 +86,184 @@
 
 .modal-footer-social { display: flex; gap: 25px; }
 .interaction-item { display: flex; align-items: center; gap: 8px; color: #444; font-weight: 600; }
+/* Estilos para el Modal de Comentarios */
+.modal-content-comments {
+  background: white;
+  width: 90%;
+  max-width: 500px;
+  height: 80vh;
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
+}
+
+.comments-header {
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  color: #666;
+}
+
+.comments-list {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #f9f9f9;
+}
+
+.comment-bubble {
+  background: white;
+  padding: 15px;
+  border-radius: 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.comment-bubble strong {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.comment-bubble p {
+  margin: 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.comment-bubble small {
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.comment-input-area {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment-input-area textarea {
+  width: 100%;
+  height: 80px;
+  border-radius: 15px;
+  border: 1px solid #ddd;
+  padding: 12px;
+  resize: none;
+}
+
+.comment-input-area button {
+  align-self: flex-end;
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+/* Contenedor principal de la barra de interacción */
+.modal-footer-social-pill-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  margin-top: 10px;
+}
+
+.interaction-pills-left {
+  display: flex;
+  gap: 10px;
+}
+
+/* Estilo de la "Píldora" individual */
+.interaction-pill-button {
+  background-color: #f0f2f5; /* Gris suave del feed */
+  padding: 8px 16px;
+  border-radius: 25px; /* Forma de píldora */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border: none;
+}
+
+.interaction-pill-button:hover {
+  background-color: #e4e6e9; /* Un poco más oscuro al pasar el mouse */
+}
+
+.interaction-pill-button .icon {
+  font-size: 1.1rem;
+}
+
+.interaction-pill-button .count, 
+.interaction-pill-button .text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #050505;
+}
+
+/* Ajuste específico para el botón de Guardar a la derecha */
+.save-pill {
+  margin-left: auto;
+  background-color: #f0f2f5;
+}
+.connection-banner {
+  display: inline-flex; /* Cambiado de flex a inline-flex para que sea una píldora */
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px; /* Ajuste para que se vea más compacto */
+  border-radius: 20px; /* Bordes totalmente redondeados */
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 15px; /* Espacio respecto al texto "Explorar Mundo" */
+}
+
+/* ONLINE / FAST - Verde suave */
+.connection-banner.online {
+  background: #e6f4ea;
+  color: #1e7e34;
+  border: 1px solid #ceead6;
+}
+
+/* OFFLINE - Rojo suave */
+.connection-banner.offline {
+  background: #fdecea;
+  color: #c5221f;
+  border: 1px solid #fad2cf;
+}
+
+.connection-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  /* Animación de pulso para que se vea vivo */
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
