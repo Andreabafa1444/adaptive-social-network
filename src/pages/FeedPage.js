@@ -7,23 +7,16 @@ import "../styles/feed.css";
 
 function FeedPage() {
   const navigate = useNavigate();
-  const { online, type } = useConnection(); // ← destructuramos el objeto
-
-  // Convertimos a un string limpio de 3 estados para todos los hijos
-  // DevTools throttling devuelve: "4g", "3g", "2g", "slow-2g"
-  const connectionStatus = !online
-    ? "offline"
-    : type === "4g" || type === "unknown"
-    ? "fast"
-    : "slow"; // cubre "3g", "2g", "slow-2g"
+  // ✅ useConnection devuelve string directo: "fast" | "slow" | "offline"
+  // NO destructurar como objeto — eso daría online=undefined → siempre "offline"
+  const connection = useConnection();
 
   return (
     <div className="feed-wrapper">
       <Navbar />
       <div className="feed-container">
 
-        {/* Pasamos el string limpio, no el objeto */}
-        <ConnectionBanner connection={connectionStatus} />
+        <ConnectionBanner connection={connection} />
 
         <div className="create-button-container">
           <button onClick={() => navigate("/create")} className="create-post-btn">
@@ -31,7 +24,7 @@ function FeedPage() {
           </button>
         </div>
 
-        <Feed connection={connectionStatus} />
+        <Feed connection={connection} />
 
       </div>
     </div>
