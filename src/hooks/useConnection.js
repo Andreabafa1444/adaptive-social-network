@@ -10,8 +10,24 @@ function isOnline() {
   return navigator.onLine;
 }
 
+// Lee override de localStorage (solo para pruebas de Lighthouse)
+// Uso en consola:
+//   localStorage.setItem("connection_override", "slow")    → fuerza slow
+//   localStorage.setItem("connection_override", "offline") → fuerza offline
+//   localStorage.removeItem("connection_override")         → vuelve al timer normal
+function getOverride() {
+  const val = localStorage.getItem("connection_override");
+  if (val === "fast" || val === "slow" || val === "offline") return val;
+  return null;
+}
+
 export default function useConnection() {
   const [status, setStatus] = useState(() => {
+    const override = getOverride();
+    if (override) {
+      console.log(`📡 [useConnection] override activo: ${override}`);
+      return override;
+    }
     const initial = isOnline() ? "fast" : "offline";
     console.log(`📡 [useConnection] estado inicial: ${initial}`);
     return initial;
@@ -27,6 +43,8 @@ export default function useConnection() {
     const delay = randomSeconds();
 
     timerRef.current = setTimeout(() => {
+      // Si hay override activo, no alternar — Lighthouse está corriendo
+      if (getOverride()) return;
       if (!isOnline()) {
         console.log("📡 [useConnection] sin internet, no alterno");
         return;
