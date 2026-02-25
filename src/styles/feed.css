@@ -310,3 +310,30 @@
   font-size: 1.1rem;
   color: #888;
 }
+@media (max-width: 480px) and (orientation: portrait) {
+  .feed-wrapper {
+    padding-top: 16px; /* quita el espacio grande del navbar que ya no está arriba */
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

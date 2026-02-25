@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./services/firebase";
 
-// Importación corregida (Fíjate en el nombre Explorar)
 import FeedPage from "./pages/FeedPage";
 import Explorar from "./pages/Explorar"; 
 import News from "./pages/News";
@@ -12,6 +11,8 @@ import Register from "./pages/Register";
 import Saved from "./pages/Saved";
 import Feedback from "./pages/Feedback";
 import CreatePostPage from "./pages/CreatePostPage";
+import SurveyModal from "./components/SurveyModal";
+import WelcomeModal from "./components/WelcomeModal";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -30,19 +31,20 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={!user ? <Login /> : <Navigate to="/feed" />} />
+        <Route path="/login"    element={!user ? <Login />    : <Navigate to="/feed" />} />
         <Route path="/register" element={!user ? <Register /> : <Navigate to="/feed" />} />
-        
-        {/* RUTAS PROTEGIDAS */}
-        <Route path="/feed" element={user ? <FeedPage /> : <Navigate to="/login" />} />
-        <Route path="/explore" element={user ? <Explorar /> : <Navigate to="/login" />} />
-        <Route path="/news" element={user ? <News /> : <Navigate to="/login" />} />
-        <Route path="/saved" element={user ? <Saved /> : <Navigate to="/login" />} />
-        <Route path="/feedback" element={user ? <Feedback /> : <Navigate to="/login" />} />
-        <Route path="/create" element={user ? <CreatePostPage /> : <Navigate to="/login" />} />
-
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="/feed"     element={user ? <FeedPage />      : <Navigate to="/login" />} />
+        <Route path="/explore"  element={user ? <Explorar />      : <Navigate to="/login" />} />
+        <Route path="/news"     element={user ? <News />          : <Navigate to="/login" />} />
+        <Route path="/saved"    element={user ? <Saved />         : <Navigate to="/login" />} />
+        <Route path="/feedback" element={user ? <Feedback />      : <Navigate to="/login" />} />
+        <Route path="/create"   element={user ? <CreatePostPage />: <Navigate to="/login" />} />
+        <Route path="*"         element={<Navigate to="/login" />} />
       </Routes>
+
+      {/* SurveyModal fuera de Routes — se renderiza en toda la app */}
+      {user && <WelcomeModal />}
+      {user && <SurveyModal />}
     </BrowserRouter>
   );
 }

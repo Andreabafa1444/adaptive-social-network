@@ -1,6 +1,6 @@
-/* =========================
-   NAVBAR MODERNO CLEAN
-   ========================= */
+/* ==========================================
+   NAVBAR BASE (ESCRITORIO Y HORIZONTAL)
+   ========================================== */
 
    .navbar-wrapper {
     position: fixed;
@@ -14,56 +14,127 @@
   .navbar-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 18px 32px;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
   
-  /* Logo */
   .navbar-logo {
-    font-weight: 600;
-    font-size: 1.2rem;
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: -0.5px;
     text-decoration: none;
     color: #111;
   }
   
-  /* Links */
   .navbar-center {
     display: flex;
-    gap: 28px;
+    gap: 30px;
   }
   
   .navbar-center a {
     text-decoration: none;
-    color: #555;
+    color: #666;
     font-size: 0.95rem;
-    transition: color 0.2s ease;
-  }
-  
-  .navbar-center a:hover {
-    color: #000;
-  }
-  
-  /* Right */
-  .navbar-right {
+    font-weight: 500;
+    transition: color 0.2s;
     display: flex;
     align-items: center;
+    gap: 6px;
   }
   
-  /* Button estilo Stripe */
+  .navbar-center a:hover { color: #000; }
+  
+  .navbar-center a.nav-active {
+    color: #000;
+    font-weight: 700;
+  }
+  
+  .navbar-center a svg { display: none; }
+  
   .navbar-btn {
-    background: #111;
-    color: white;
-    border: none;
+    background: #f5f5f7;
+    color: #ff3b30;
+    border: 1px solid #e5e5e5;
     padding: 8px 16px;
-    border-radius: 8px;
+    border-radius: 20px;
     font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
   }
   
   .navbar-btn:hover {
-    background: #333;
+    background: #ff3b30;
+    color: #fff;
+    border-color: #ff3b30;
   }
   
+  /* ==========================================
+     MÓVIL VERTICAL — BARRA FLOTANTE ABAJO
+     ========================================== */
+  
+  @media (max-width: 480px) and (orientation: portrait) {
+  
+    .navbar-wrapper {
+      top: auto;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0,0,0,0.08);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  
+    .navbar-container {
+      padding: 10px 4px 6px;
+    }
+  
+    .navbar-left,
+    .navbar-right {
+      display: none;
+    }
+  
+    .navbar-center {
+      width: 100%;
+      justify-content: space-around;
+      gap: 0;
+    }
+  
+    .navbar-center a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #aaa;
+      font-size: 0.62rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 14px;
+      transition: color 0.2s;
+      min-width: 56px;
+    }
+  
+    .navbar-center a svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+  
+    .navbar-center a span { display: block; }
+  
+    .navbar-center a.nav-active { color: #111; }
+    .navbar-center a:hover { color: #333; }
+  
+    body {
+      padding-bottom: 90px !important;
+      padding-top: 0 !important;
+    }
+  }
