@@ -20,7 +20,6 @@
     margin-bottom: 15px; 
   }
   
-  /* Tópicos con scroll horizontal */
   .topics-bar { 
     display: flex; 
     gap: 10px; 
@@ -62,7 +61,6 @@
     opacity: 0.8; 
   }
   
-  /* Caja de imagen estándar */
   .card-image-box { 
     width: 100px; 
     height: 100px; 
@@ -95,7 +93,6 @@
     color: #999; 
   }
   
-  /* Modal Estándar Social */
   .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
@@ -128,20 +125,17 @@
      ITERACIÓN 2: INTERFAZ MEDIA (SLOW) - OPTIMIZACIÓN
      ============================================================ */
   
-  /* En el modo Slow, el JS elimina la imagen del modal. 
-     Ajustamos el texto para que sea el protagonista */
   .mode-slow .modal-title-social {
-    font-size: 26px; /* Más grande al no haber imagen */
+    font-size: 26px;
     text-align: center;
   }
   
   .mode-slow .modal-text-social {
-    font-size: 18px; /* Texto más legible */
+    font-size: 18px;
     line-height: 1.7;
     color: #222;
   }
   
-  /* Efecto visual en la lista para imágenes slow (lazy) */
   .mode-slow .card-image-box img {
     filter: grayscale(0.4);
     opacity: 0.9;
@@ -151,15 +145,13 @@
      ITERACIÓN 3: INTERFAZ BAJA (OFFLINE) - TEXTO PLANO
      ============================================================ */
   
-  /* Transformamos la card en una lista de lectura directa */
   .offline-card {
-    flex-direction: column; /* Apilamos contenido */
+    flex-direction: column;
     gap: 5px;
     padding: 20px 0;
-    cursor: default; /* Indicamos que no hay navegación */
+    cursor: default;
   }
   
-  /* Estilo de texto plano sin distracciones visuales */
   .mode-offline .card-content-box h3 {
     font-size: 1.3rem;
     color: #000;
@@ -174,16 +166,14 @@
     margin-bottom: 10px;
   }
   
-  /* Ocultamos elementos de interacción que requieren red */
   .mode-offline .card-footer-mini span:last-child {
     display: none; 
   }
   
   /* ============================================================
-     COMPONENTES COMPARTIDOS: PILLS, COMENTARIOS Y BANNER
+     COMPONENTES COMPARTIDOS
      ============================================================ */
   
-  /* Píldoras de interacción (Likes/Guardar) */
   .modal-footer-social-pill-container {
     display: flex; justify-content: space-between; align-items: center;
     padding-top: 15px; margin-top: 10px;
@@ -197,7 +187,6 @@
   
   .interaction-pill-button:hover { background-color: #e4e6e9; }
   
-  /* Modal de Comentarios */
   .modal-content-comments {
     background: white; width: 90%; max-width: 500px; height: 80vh;
     border-radius: 28px; display: flex; flex-direction: column; overflow: hidden;
@@ -212,7 +201,6 @@
     margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
   }
   
-  /* Banner de conexión adaptable */
   .connection-banner {
     display: inline-flex;
     align-items: center;
@@ -224,7 +212,6 @@
     margin-left: 10px;
   }
   
-  /* Estilos de pulso para el punto de conexión */
   @keyframes pulse {
     0% { opacity: 1; }
     50% { opacity: 0.4; }
@@ -234,70 +221,170 @@
   .connection-banner span:first-child {
     animation: pulse 2s infinite;
   }
-  /* --- CORRECCIÓN DE LA "X" DE CIERRE --- */
-.close-modal-social {
-  position: absolute;
-  top: 15px;
-  left: 15px; /* Según la imagen, la X está arriba a la izquierda */
-  background: #fff;
-  border: 1px solid #ddd;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px; /* Forma cuadrada redondeada como en la imagen */
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 100;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+  .close-modal-social {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .interaction-pills-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-footer-social-pill-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 15px;
+  }
+
+  .interaction-pill-button {
+    background-color: #f0f2f5;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+  }
+
+  .full-note-link {
+    display: block;
+    margin-top: 15px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .full-note-link:hover {
+    text-decoration: underline;
+  }
+
+  .mode-slow .modal-image-container {
+    display: none;
+  }
+
+  .mode-slow .modal-body-social {
+    text-align: center;
+    padding: 40px 25px;
+  }
+
+/* ============================================================
+   MEJORAS VISUALES — SE AGREGAN ENCIMA SIN ROMPER NADA
+   ============================================================ */
+
+/* FAST: hover con elevación y sombra verde sutil */
+.mode-fast .social-card-mini:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 200, 150, 0.1);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
-/* --- ALINEACIÓN DE CORAZÓN Y COMENTARIOS LADO A LADO --- */
-.interaction-pills-group {
-  display: flex;
-  flex-direction: column; /* Apilados verticalmente a la izquierda como la imagen */
-  gap: 8px;
+.mode-fast .source-label {
+  color: #00c896;
 }
 
-.modal-footer-social-pill-container {
-  display: flex;
-  justify-content: space-between; /* Grupo izquierda e icono guardar derecha */
-  align-items: flex-end; /* Alineados a la base */
-  margin-top: 15px;
+/* SLOW: fondo cálido + imagen en blanco y negro total + source naranja */
+.mode-slow {
+  background: #fffdf7;
 }
 
-/* --- ESTILO DE PÍLDORAS (Fondo gris suave) --- */
-.interaction-pill-button {
-  background-color: #f0f2f5;
-  padding: 6px 12px;
-  border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  width: fit-content;
+.mode-slow .social-card-mini {
+  background: #fffef9;
+  border-bottom: 1px solid #f0e8d0;
 }
 
-/* --- ENLACE A NOTA COMPLETA --- */
-.full-note-link {
-  display: block;
-  margin-top: 15px;
-  color: #007bff;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
+.mode-slow .card-image-box img {
+  filter: grayscale(1);
+  opacity: 0.85;
 }
 
-.full-note-link:hover {
-  text-decoration: underline;
+.mode-slow .source-label {
+  color: #e6950a;
 }
 
-/* --- ITERACIÓN MEDIA (SLOW): Quitar imagen y centrar --- */
-.mode-slow .modal-image-container {
-  display: none;
-}
-
-.mode-slow .modal-body-social {
+/* SLOW: banner de advertencia — agrégalo en el JSX como:
+   <div className="news-page-banner">⚡ Conexión lenta · Interfaz optimizada</div>
+   justo después del <Navbar /> */
+.mode-slow .news-page-banner {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(90deg, #f5a623, #f7bc5a);
+  color: #5a3200;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
   text-align: center;
-  padding: 40px 25px;
+  padding: 6px 0;
+  z-index: 999;
+  text-transform: uppercase;
+}
+
+.mode-slow .news-header {
+  margin-top: 105px;
+}
+
+/* OFFLINE: fondo gris + borde rojo izquierdo + source rojo + banner rojo */
+.mode-offline {
+  background: #f4f4f4;
+}
+
+.mode-offline .offline-card {
+  border-left: 3px solid #c5221f;
+  padding-left: 14px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.mode-offline .source-label {
+  color: #c5221f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.7rem;
+}
+
+.mode-offline .card-content-box h3 {
+  font-weight: 800;
+}
+
+/* OFFLINE: banner — agrégalo en el JSX como:
+   <div className="news-page-banner">📴 Sin conexión · Solo lectura</div>
+   justo después del <Navbar /> */
+.mode-offline .news-page-banner {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(90deg, #c5221f, #e53935);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-align: center;
+  padding: 6px 0;
+  z-index: 999;
+  text-transform: uppercase;
+}
+
+.mode-offline .news-header {
+  margin-top: 105px;
 }

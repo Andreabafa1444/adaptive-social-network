@@ -171,7 +171,7 @@ function News() {
       </div>
 
       {/* --- MODAL DETALLE --- */}
-      // --- MODAL DETALLE ---
+      
 {selectedNews && !showComments && (
   <div className="modal-overlay" onClick={() => setSelectedNews(null)}>
     <div className="modal-content-social" onClick={e => e.stopPropagation()}>
