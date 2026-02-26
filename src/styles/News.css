@@ -1,5 +1,5 @@
 /* ============================================================
-   ESTRUCTURA GENERAL Y HEADER (COMÚN A TODAS LAS INTERFACES)
+   ESTRUCTURA GENERAL Y HEADER
    ============================================================ */
 
    .container { 
@@ -34,7 +34,8 @@
     border: 1px solid #ddd; 
     background: #fff; 
     cursor: pointer; 
-    transition: 0.2s; 
+    transition: 0.2s;
+    white-space: nowrap;
   }
   
   .topics-bar button.active { 
@@ -44,7 +45,7 @@
   }
   
   /* ============================================================
-     ITERACIÓN 1: INTERFAZ ALTA (FAST) - DISEÑO COMPLETO
+     CARDS
      ============================================================ */
   
   .social-card-mini {
@@ -57,9 +58,7 @@
     transition: 0.2s;
   }
   
-  .social-card-mini:hover { 
-    opacity: 0.8; 
-  }
+  .social-card-mini:hover { opacity: 0.8; }
   
   .card-image-box { 
     width: 100px; 
@@ -90,301 +89,313 @@
   
   .card-footer-mini { 
     font-size: 0.8rem; 
-    color: #999; 
+    color: #999;
+    margin-top: 6px;
   }
+  
+  /* ============================================================
+     MODAL DETALLE
+     ============================================================ */
   
   .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
     display: flex; justify-content: center; align-items: center; z-index: 3000;
   }
   
   .modal-content-social {
     background: white; width: 90%; max-width: 600px; border-radius: 28px;
-    overflow: hidden; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    overflow: hidden; position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
     animation: modalIn 0.3s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
   }
   
-  .modal-image-container { 
-    padding: 15px 15px 0 15px; 
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
+  
+  .modal-image-container { padding: 15px 15px 0; }
   
   .modal-img-social { 
-    width: 100%; 
-    height: auto; 
-    max-height: 350px; 
-    object-fit: cover; 
-    border-radius: 20px; 
+    width: 100%; height: auto; max-height: 350px; 
+    object-fit: cover; border-radius: 20px; 
   }
   
-  .modal-body-social { 
-    padding: 25px; 
-  }
+  .modal-body-social { padding: 25px; }
   
-  /* ============================================================
-     ITERACIÓN 2: INTERFAZ MEDIA (SLOW) - OPTIMIZACIÓN
-     ============================================================ */
-  
-  .mode-slow .modal-title-social {
-    font-size: 26px;
-    text-align: center;
-  }
-  
-  .mode-slow .modal-text-social {
-    font-size: 18px;
-    line-height: 1.7;
-    color: #222;
-  }
-  
-  .mode-slow .card-image-box img {
-    filter: grayscale(0.4);
-    opacity: 0.9;
-  }
-  
-  /* ============================================================
-     ITERACIÓN 3: INTERFAZ BAJA (OFFLINE) - TEXTO PLANO
-     ============================================================ */
-  
-  .offline-card {
-    flex-direction: column;
-    gap: 5px;
-    padding: 20px 0;
-    cursor: default;
-  }
-  
-  .mode-offline .card-content-box h3 {
+  .modal-title-social {
     font-size: 1.3rem;
-    color: #000;
-    margin-bottom: 8px;
-  }
-  
-  .mode-offline .news-description {
-    display: block;
-    font-size: 15px;
-    color: #444;
-    line-height: 1.5;
+    font-weight: 800;
+    color: #111;
+    line-height: 1.3;
     margin-bottom: 10px;
   }
   
-  .mode-offline .card-footer-mini span:last-child {
-    display: none; 
+  .modal-text-social {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
   }
   
-  /* ============================================================
-     COMPONENTES COMPARTIDOS
-     ============================================================ */
+  .modal-divider {
+    height: 1px;
+    background: #eee;
+    margin: 16px 0;
+  }
   
+  .close-modal-social {
+    position: absolute; top: 15px; left: 15px;
+    background: #fff; border: 1px solid #ddd;
+    width: 32px; height: 32px; border-radius: 8px;
+    font-size: 18px; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .full-note-link {
+    display: block; margin-top: 15px;
+    color: #007bff; text-decoration: none;
+    font-weight: 600; font-size: 14px;
+  }
+  
+  .full-note-link:hover { text-decoration: underline; }
+  
+  /* Pills de interacción */
   .modal-footer-social-pill-container {
-    display: flex; justify-content: space-between; align-items: center;
-    padding-top: 15px; margin-top: 10px;
+    display: flex; justify-content: space-between;
+    align-items: center; padding-top: 15px; margin-top: 10px;
   }
+  
+  .interaction-pills-left { display: flex; gap: 8px; }
   
   .interaction-pill-button {
-    background-color: #f0f2f5; padding: 8px 16px; border-radius: 25px;
-    display: flex; align-items: center; gap: 8px; cursor: pointer;
-    transition: 0.2s; border: none; font-weight: 600;
+    background-color: #f0f2f5; padding: 8px 16px;
+    border-radius: 25px; display: inline-flex;
+    align-items: center; gap: 8px; cursor: pointer;
+    transition: 0.2s; border: none; font-weight: 600; font-size: 0.9rem;
   }
   
   .interaction-pill-button:hover { background-color: #e4e6e9; }
   
+  /* ============================================================
+     MODAL COMENTARIOS — REDISEÑADO
+     ============================================================ */
+  
   .modal-content-comments {
-    background: white; width: 90%; max-width: 500px; height: 80vh;
-    border-radius: 28px; display: flex; flex-direction: column; overflow: hidden;
+    background: #f5f5f7;
+    width: 90%;
+    max-width: 500px;
+    height: 80vh;
+    border-radius: 28px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: modalIn 0.3s ease-out;
   }
   
+  .comments-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px 14px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0;
+  }
+  
+  .comments-header h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+  }
+  
+  .back-btn {
+    background: #f0f0f0;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  
+  .back-btn:hover { background: #e0e0e0; }
+  
   .comments-list { 
-    flex-grow: 1; padding: 20px; overflow-y: auto; background: #f9f9f9; 
+    flex-grow: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
   
   .comment-bubble { 
-    background: white; padding: 15px; border-radius: 18px; 
-    margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+    background: #fff;
+    padding: 14px 16px;
+    border-radius: 18px; 
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
   
+  .comment-bubble strong {
+    font-size: 0.85rem;
+    color: #111;
+    display: block;
+    margin-bottom: 4px;
+  }
+  
+  .comment-bubble p {
+    font-size: 0.9rem;
+    color: #333;
+    margin: 0 0 6px;
+    line-height: 1.45;
+  }
+  
+  .comment-bubble small {
+    font-size: 0.72rem;
+    color: #aaa;
+  }
+  
+  .no-comments {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-top: 40px;
+  }
+  
+  .comment-input-area {
+    padding: 12px 16px;
+    background: #fff;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  
+  .comment-input-area textarea {
+    flex: 1;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 16px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+    min-height: 42px;
+    max-height: 100px;
+    line-height: 1.4;
+    transition: border 0.2s;
+  }
+  
+  .comment-input-area textarea:focus { border-color: #111; }
+  
+  .comment-input-area button {
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  .comment-input-area button:hover { opacity: 0.85; }
+  
+  /* ============================================================
+     MODOS SLOW Y OFFLINE
+     ============================================================ */
+  
+  .mode-slow .modal-title-social { font-size: 26px; text-align: center; }
+  .mode-slow .modal-text-social  { font-size: 18px; line-height: 1.7; color: #222; }
+  .mode-slow .modal-image-container { display: none; }
+  .mode-slow .modal-body-social  { text-align: center; padding: 40px 25px; }
+  
+  .offline-card {
+    flex-direction: column; gap: 5px;
+    padding: 20px 0; cursor: default;
+  }
+  
+  .mode-offline .card-content-box h3 { font-size: 1.3rem; color: #000; margin-bottom: 8px; }
+  .mode-offline .news-description    { display: block; font-size: 15px; color: #444; line-height: 1.5; margin-bottom: 10px; }
+  .mode-offline .card-footer-mini span:last-child { display: none; }
+  
+  /* ============================================================
+     CONNECTION BANNER
+     ============================================================ */
+  
   .connection-banner {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    margin-left: 10px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 800; margin-left: 10px;
   }
   
   @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.4; }
-    100% { opacity: 1; }
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
   }
   
-  .connection-banner span:first-child {
-    animation: pulse 2s infinite;
+  .connection-banner span:first-child { animation: pulse 2s infinite; }
+  
+  /* ============================================================
+     MEJORAS VISUALES POR MODO
+     ============================================================ */
+  
+  .mode-fast .social-card-mini:hover {
+    opacity: 1; transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,200,150,0.1);
+    transition: transform 0.15s, box-shadow 0.15s;
   }
-
-  .close-modal-social {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: #fff;
-    border: 1px solid #ddd;
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 100;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  
+  .mode-fast .source-label { color: #00c896; }
+  
+  .mode-slow { background: #fffdf7; }
+  .mode-slow .social-card-mini { background: #fffef9; border-bottom: 1px solid #f0e8d0; }
+  .mode-slow .card-image-box img { filter: grayscale(1); opacity: 0.85; }
+  .mode-slow .source-label { color: #e6950a; }
+  
+  .mode-slow .news-page-banner {
+    position: fixed; top: 60px; left: 0; right: 0;
+    background: linear-gradient(90deg, #f5a623, #f7bc5a);
+    color: #5a3200; font-size: 0.72rem; font-weight: 800;
+    letter-spacing: 0.5px; text-align: center; padding: 6px 0;
+    z-index: 999; text-transform: uppercase;
   }
-
-  .interaction-pills-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  
+  .mode-slow .news-header { margin-top: 105px; }
+  
+  .mode-offline { background: #f4f4f4; }
+  
+  .mode-offline .offline-card {
+    border-left: 3px solid #c5221f; padding-left: 14px;
+    background: #fff; border-bottom: 1px solid #ddd;
   }
-
-  .modal-footer-social-pill-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-top: 15px;
+  
+  .mode-offline .source-label {
+    color: #c5221f; text-transform: uppercase;
+    letter-spacing: 0.5px; font-size: 0.7rem;
   }
-
-  .interaction-pill-button {
-    background-color: #f0f2f5;
-    padding: 6px 12px;
-    border-radius: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    width: fit-content;
+  
+  .mode-offline .card-content-box h3 { font-weight: 800; }
+  
+  .mode-offline .news-page-banner {
+    position: fixed; top: 60px; left: 0; right: 0;
+    background: linear-gradient(90deg, #c5221f, #e53935);
+    color: #fff; font-size: 0.72rem; font-weight: 800;
+    letter-spacing: 0.5px; text-align: center; padding: 6px 0;
+    z-index: 999; text-transform: uppercase;
   }
-
-  .full-note-link {
-    display: block;
-    margin-top: 15px;
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-  }
-
-  .full-note-link:hover {
-    text-decoration: underline;
-  }
-
-  .mode-slow .modal-image-container {
-    display: none;
-  }
-
-  .mode-slow .modal-body-social {
-    text-align: center;
-    padding: 40px 25px;
-  }
-
-/* ============================================================
-   MEJORAS VISUALES — SE AGREGAN ENCIMA SIN ROMPER NADA
-   ============================================================ */
-
-/* FAST: hover con elevación y sombra verde sutil */
-.mode-fast .social-card-mini:hover {
-  opacity: 1;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 200, 150, 0.1);
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.mode-fast .source-label {
-  color: #00c896;
-}
-
-/* SLOW: fondo cálido + imagen en blanco y negro total + source naranja */
-.mode-slow {
-  background: #fffdf7;
-}
-
-.mode-slow .social-card-mini {
-  background: #fffef9;
-  border-bottom: 1px solid #f0e8d0;
-}
-
-.mode-slow .card-image-box img {
-  filter: grayscale(1);
-  opacity: 0.85;
-}
-
-.mode-slow .source-label {
-  color: #e6950a;
-}
-
-/* SLOW: banner de advertencia — agrégalo en el JSX como:
-   <div className="news-page-banner">⚡ Conexión lenta · Interfaz optimizada</div>
-   justo después del <Navbar /> */
-.mode-slow .news-page-banner {
-  position: fixed;
-  top: 60px;
-  left: 0;
-  right: 0;
-  background: linear-gradient(90deg, #f5a623, #f7bc5a);
-  color: #5a3200;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-align: center;
-  padding: 6px 0;
-  z-index: 999;
-  text-transform: uppercase;
-}
-
-.mode-slow .news-header {
-  margin-top: 105px;
-}
-
-/* OFFLINE: fondo gris + borde rojo izquierdo + source rojo + banner rojo */
-.mode-offline {
-  background: #f4f4f4;
-}
-
-.mode-offline .offline-card {
-  border-left: 3px solid #c5221f;
-  padding-left: 14px;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-}
-
-.mode-offline .source-label {
-  color: #c5221f;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-size: 0.7rem;
-}
-
-.mode-offline .card-content-box h3 {
-  font-weight: 800;
-}
-
-/* OFFLINE: banner — agrégalo en el JSX como:
-   <div className="news-page-banner">📴 Sin conexión · Solo lectura</div>
-   justo después del <Navbar /> */
-.mode-offline .news-page-banner {
-  position: fixed;
-  top: 60px;
-  left: 0;
-  right: 0;
-  background: linear-gradient(90deg, #c5221f, #e53935);
-  color: #fff;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-align: center;
-  padding: 6px 0;
-  z-index: 999;
-  text-transform: uppercase;
-}
-
-.mode-offline .news-header {
-  margin-top: 105px;
-}
+  
+  .mode-offline .news-header { margin-top: 105px; }

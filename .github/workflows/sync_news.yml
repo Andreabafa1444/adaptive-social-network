@@ -2,7 +2,7 @@ name: News Sync Bot
 
 on:
   schedule:
-    - cron: '0 */12 ***' # Esto significa: Correr todos los días en intervalos de 12 horas
+    - cron: '0 */12 * * *' # Esto significa: Correr todos los días en intervalos de 12 horas
   workflow_dispatch: # Esto permite que tú lo corras a mano desde GitHub si quieres
 
 jobs:

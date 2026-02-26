@@ -31,7 +31,7 @@ export default function WelcomeModal() {
       body: null,
       steps: [
         { n: "1", text: "Navega la app con internet unos dos minutos para que veas cambios" },
-        { n: "2", text: "Desactiva tu WiFi o datos para ver el modo offline" },
+        { n: "2", text: "Importante desactiva ambos: tu WiFi y datos para ver el modo offline" },
         { n: "3", text: "Vuelve a conectarte cuando quieras" },
         { n: "4", text: "Al reconectarte te haremos unas preguntas rápidas" },
       ],

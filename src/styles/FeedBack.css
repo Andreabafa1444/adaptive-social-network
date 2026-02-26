@@ -106,6 +106,15 @@
     gap: 8px;
     justify-content: center;
   }
+  .fb-stars-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.72rem;
+    color: rgba(0,0,0,0.4);
+    margin-top: 4px;
+    padding: 0 4px;
+  }
   
   .fb-star {
     background: none;
