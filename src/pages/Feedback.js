@@ -2,84 +2,104 @@ import { useState, useEffect } from "react";
 import { db, auth } from "../services/firebase";
 import { collection, addDoc, serverTimestamp, doc, getDoc, setDoc } from "firebase/firestore";
 import Navbar from "../components/NavBar";
-import "../styles/FeedBack.css";
+import "../styles/Feedback.css";
 
 const QUESTIONS = [
   {
-    id: "noticed_offline",
-    text: "¿Notaste que la app cambió cuando perdiste conexión?",
+    id: "app_speed",
+    text: "¿Qué tan rápida sentiste la aplicación al abrirla por primera vez?",
+    type: "stars",
+    label: ["Muy lenta", "Muy rápida"],
+  },
+  {
+    id: "felt_stuck",
+    text: "¿Hubo momentos en que pensaste que la app se había trabado o no funcionaba?",
     type: "options",
-    options: ["Sí, claramente", "Lo noté poco", "No me di cuenta"],
+    options: ["Sí", "No"],
+  },
+  {
+    id: "images_wait",
+    text: "¿Qué tan molesto te resultó esperar a que cargaran las fotos?",
+    type: "stars",
+    label: ["Nada molesto", "Muy molesto"],
+  },
+  {
+    id: "noticed_change",
+    text: "¿Te diste cuenta del momento exacto en que la app cambió de mostrar fotos a mostrar solo texto?",
+    type: "options",
+    options: ["Sí, lo noté claramente", "Lo noté poco", "No me di cuenta"],
   },
   {
     id: "understood_offline",
-    text: "Sin imágenes, ¿pudiste leer y entender el contenido?",
+    text: "Cuando perdiste conexión, ¿pudiste seguir leyendo y entendiendo el contenido solo con texto?",
     type: "options",
-    options: ["Sí, perfectamente", "Más o menos", "No, me faltó información"],
+    options: ["Sí, sin problema", "Más o menos", "No, me faltó información"],
   },
   {
-    id: "missed_images",
-    text: "¿Te molestó no ver las fotos en modo sin conexión?",
+    id: "prefers_speed",
+    text: "Si tuvieras muy poco internet, ¿preferirías que la app te muestre solo texto rápido en lugar de esperar por las fotos?",
     type: "options",
-    options: ["Mucho", "Poco", "Nada, prefiero que cargue rápido"],
+    options: ["Sí, prefiero rapidez", "No, prefiero esperar por las fotos"],
   },
   {
-    id: "would_use_offline",
-    text: "¿Usarías esta versión de solo texto si tuvieras señal muy mala?",
+    id: "layout_shift",
+    text: "¿Sentiste que los textos o botones saltaban de lugar mientras las imágenes terminaban de cargar?",
     type: "options",
-    options: ["Sí", "No", "Depende de la situación"],
+    options: ["Sí, fue confuso", "No, todo se mantuvo estable"],
   },
   {
-    id: "felt_difference_return",
-    text: "Al recuperar la conexión, ¿sentiste que la app mejoró visualmente?",
-    type: "options",
-    options: ["Sí, claramente", "Un poco", "No noté diferencia"],
-  },
-  {
-    id: "preference",
-    text: "¿Qué versión preferiste en general?",
-    type: "options",
-    options: ["Con imágenes (conexión normal)", "Sin imágenes (modo offline)", "Me da igual"],
-  },
-  {
-    id: "overall_experience",
-    text: "¿Qué tan satisfecho quedaste con la experiencia general de la app?",
+    id: "nav_ease",
+    text: "¿Qué tan fácil te resultó navegar entre las secciones usando el menú de abajo?",
     type: "stars",
+    label: ["Difícil", "Muy fácil"],
   },
   {
-    id: "would_recommend",
-    text: "¿Recomendarías una app que se adapta automáticamente a tu conexión?",
+    id: "offline_trust",
+    text: "¿Te sentiste más seguro usando una app que te avisa que estás sin conexión pero te permite seguir leyendo?",
     type: "options",
-    options: ["Sí, definitivamente", "Tal vez", "No"],
+    options: ["Sí", "No"],
+  },
+  {
+    id: "overall_rating",
+    text: "En general, ¿qué calificación le das a la app considerando que funciona incluso sin internet?",
+    type: "stars",
+    label: ["Muy mala", "Excelente"],
   },
 ];
 
-function Stars({ value, onChange }) {
+function Stars({ value, onChange, label }) {
   return (
-    <div className="fb-stars">
-      {[1, 2, 3, 4, 5].map((n) => (
-        <button
-          key={n}
-          type="button"
-          className={`fb-star ${value >= n ? "active" : ""}`}
-          onClick={() => onChange(n)}
-        >
-          ★
-        </button>
-      ))}
+    <div className="fb-stars-wrapper">
+      <div className="fb-stars">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button
+            key={n}
+            type="button"
+            className={`fb-star ${value >= n ? "active" : ""}`}
+            onClick={() => onChange(n)}
+          >
+            ★
+          </button>
+        ))}
+      </div>
+      {label && (
+        <div className="fb-stars-labels">
+          <span>{label[0]}</span>
+          <span>{label[1]}</span>
+        </div>
+      )}
     </div>
   );
 }
 
 export default function Feedback() {
-  const [answers, setAnswers]     = useState({});
-  const [step, setStep]           = useState(0);
-  const [sending, setSending]     = useState(false);
-  const [done, setDone]           = useState(false);
+  const [answers, setAnswers]         = useState({});
+  const [step, setStep]               = useState(0);
+  const [sending, setSending]         = useState(false);
+  const [done, setDone]               = useState(false);
   const [alreadyDone, setAlreadyDone] = useState(false);
-  const [checking, setChecking]   = useState(true);
+  const [checking, setChecking]       = useState(true);
 
-  // Verificar si ya respondió
   useEffect(() => {
     const check = async () => {
       const uid = auth.currentUser?.uid;
@@ -153,10 +173,9 @@ export default function Feedback() {
           <>
             <div className="fb-header">
               <h1>Tu experiencia importa</h1>
-              <p>Responde estas {QUESTIONS.length} preguntas sobre lo que viviste en la app. Solo toma 1 minuto.</p>
+              <p>10 preguntas rápidas sobre lo que viviste en la app. Solo toma 1 minuto.</p>
             </div>
 
-            {/* Progreso */}
             <div className="fb-progress-bar">
               <div
                 className="fb-progress-fill"
@@ -165,7 +184,6 @@ export default function Feedback() {
             </div>
             <p className="fb-counter">{step + 1} de {QUESTIONS.length}</p>
 
-            {/* Pregunta */}
             <div className="fb-card">
               <p className="fb-question">{current.text}</p>
 
@@ -188,6 +206,7 @@ export default function Feedback() {
                 <Stars
                   value={answers[current.id] || 0}
                   onChange={(val) => handleAnswer(val)}
+                  label={current.label}
                 />
               )}
             </div>

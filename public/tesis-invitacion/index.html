@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adaptive — Infografía</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #fafafa;
+    --accent: #00e5a0;
+    --accent2: #ff6b35;
+    --slow: #f5a623;
+    --offline: #c5221f;
+    --card: #141414;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px 60px;
+  }
+
+  .infographic {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0a0a0a 0%, #111 60%, #0d1f17 100%);
+    border: 1px solid var(--border);
+    border-radius: 28px 28px 0 0;
+    padding: 44px 32px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(0,229,160,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,229,160,0.12);
+    border: 1px solid rgba(0,229,160,0.3);
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  .hero-badge span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.2rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 40%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.65;
+    max-width: 340px;
+    margin: 0 auto 28px;
+  }
+
+  .hero-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 13px 28px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 24px rgba(0,229,160,0.35);
+  }
+
+  .hero-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 36px rgba(0,229,160,0.5);
+  }
+
+  .hero-url {
+    margin-top: 12px;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── MODOS ── */
+  .section {
+    background: var(--card);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    padding: 32px 28px;
+  }
+
+  .section-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 20px;
+  }
+
+  .modos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .modo {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  .modo-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .modo-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .modo-desc {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+
+  /* ── FUNCIONES ── */
+  .features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .feature {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .feature-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    background: var(--card);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    padding: 0 28px;
+  }
+
+  .divider-line {
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── INSTALAR ── */
+  .install-section {
+    background: var(--card);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    padding: 32px 28px;
+  }
+
+  .install-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 20px;
+  }
+
+  .install-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 16px;
+  }
+
+  .install-os {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .install-os-icon {
+    font-size: 1.3rem;
+  }
+
+  .install-os-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .install-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .install-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .step-n {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-text {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.45;
+  }
+
+  .step-icon {
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: #0d1f17;
+    border: 1px solid rgba(0,229,160,0.15);
+    border-radius: 0 0 28px 28px;
+    padding: 28px 32px;
+    text-align: center;
+  }
+
+  .footer-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .footer-sub {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+
+  .footer-url {
+    display: inline-block;
+    background: rgba(0,229,160,0.1);
+    border: 1px solid rgba(0,229,160,0.25);
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 100px;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+  }
+
+  /* Separadores visuales entre secciones */
+  .gap-section {
+    background: var(--card);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    height: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="infographic">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge"><span></span> Red Social Adaptativa · Tesis 2025</div>
+    <h1 class="hero-title">Adaptive</h1>
+    <p class="hero-desc">Una red social que detecta tu conexión a internet y ajusta su interfaz automáticamente para que siempre puedas usarla, sin importar tu señal.</p>
+    <a class="hero-btn" href="https://adaptive-social-network.web.app/" target="_blank">→ Abrir la app</a>
+    <p class="hero-url">adaptive-social-network.web.app</p>
+  </div>
+
+  <!-- MODOS -->
+  <div class="section">
+    <p class="section-label">Cómo se adapta</p>
+    <div class="modos">
+      <div class="modo">
+        <div class="modo-dot" style="background:#00e5a0"></div>
+        <div>
+          <p class="modo-title" style="color:#00e5a0">Modo Fast · 4G</p>
+          <p class="modo-desc">Experiencia completa con imágenes, animaciones y todas las funciones activas.</p>
+        </div>
+      </div>
+      <div class="modo">
+        <div class="modo-dot" style="background:#f5a623"></div>
+        <div>
+          <p class="modo-title" style="color:#f5a623">Modo Slow · 3G</p>
+          <p class="modo-desc">Interfaz reducida, imágenes optimizadas y carga prioritaria del texto.</p>
+        </div>
+      </div>
+      <div class="modo">
+        <div class="modo-dot" style="background:#ff6b6b"></div>
+        <div>
+          <p class="modo-title" style="color:#ff6b6b">Modo Offline</p>
+          <p class="modo-desc">Solo texto esencial, sin imágenes. Puedes leer aunque no tengas señal.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gap-section"></div>
+
+  <!-- FUNCIONES -->
+  <div class="section">
+    <p class="section-label">¿Qué puedes hacer?</p>
+    <div class="features">
+      <div class="feature"><span class="feature-icon">✍️</span> Crear posts</div>
+      <div class="feature"><span class="feature-icon">❤️</span> Dar like</div>
+      <div class="feature"><span class="feature-icon">💬</span> Comentar</div>
+      <div class="feature"><span class="feature-icon">🔖</span> Guardar</div>
+      <div class="feature"><span class="feature-icon">🔍</span> Explorar</div>
+      <div class="feature"><span class="feature-icon">📰</span> Noticias</div>
+    </div>
+  </div>
+
+  <div class="gap-section"></div>
+
+  <!-- INSTALAR -->
+  <div class="install-section">
+    <p class="section-label">Instalar en tu celular</p>
+    <p style="font-size:0.82rem; color:rgba(255,255,255,0.45); margin-bottom:0; line-height:1.5">No necesitas descargar nada de la tienda. Instálala directo desde el navegador.</p>
+
+    <div class="install-grid">
+
+      <!-- Android -->
+      <div class="install-card">
+        <div class="install-os">
+          <span class="install-os-icon">🤖</span>
+          <span class="install-os-name">Android</span>
+        </div>
+        <div class="install-steps">
+          <div class="install-step">
+            <div class="step-n">1</div>
+            <span class="step-text">Abre Chrome y entra a la app</span>
+          </div>
+          <div class="install-step">
+            <div class="step-n">2</div>
+            <div>
+              <span class="step-text">Toca el menú</span>
+              <span class="step-icon">⋮</span>
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="step-n">3</div>
+            <span class="step-text">Selecciona "Añadir a pantalla de inicio"</span>
+          </div>
+          <div class="install-step">
+            <div class="step-n">4</div>
+            <span class="step-text">Toca "Instalar" ✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- iPhone -->
+      <div class="install-card">
+        <div class="install-os">
+          <span class="install-os-icon">🍎</span>
+          <span class="install-os-name">iPhone</span>
+        </div>
+        <div class="install-steps">
+          <div class="install-step">
+            <div class="step-n">1</div>
+            <span class="step-text">Abre Safari y entra a la app</span>
+          </div>
+          <div class="install-step">
+            <div class="step-n">2</div>
+            <div>
+              <span class="step-text">Toca compartir</span>
+              <span class="step-icon">⬆️</span>
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="step-n">3</div>
+            <span class="step-text">Selecciona "Añadir a inicio"</span>
+          </div>
+          <div class="install-step">
+            <div class="step-n">4</div>
+            <span class="step-text">Toca "Añadir" ✓</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p class="footer-title">¡Pruébala ahora!</p>
+    <p class="footer-sub">Es parte de una investigación de tesis sobre experiencia de usuario con conectividad variable. Tu opinión cuenta.</p>
+    <a class="footer-url" href="https://adaptive-social-network.web.app/" target="_blank">adaptive-social-network.web.app</a>
+  </div>
+
+</div>
+</body>
+</html>
