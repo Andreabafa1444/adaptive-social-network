@@ -6,51 +6,52 @@ import CommentSection from "./CommentSection";
 import Swal from "sweetalert2";
 import "../styles/post.css";
 
-// ─── Normaliza cualquier valor que venga de la API de red o del prop ──────────
-// Network Information API devuelve: "slow-2g" | "2g" | "3g" | "4g"
-// También puede venir desde el padre como: "offline" | "limited" | "full"
 function normalizeConnection(raw) {
   if (!raw || raw === "4g" || raw === "full" || raw === "fast") return "fast";
   if (raw === "3g" || raw === "limited" || raw === "unstable") return "slow";
   if (raw === "2g" || raw === "slow-2g" || raw === "slow") return "slow";
   if (raw === "offline") return "offline";
-  return "fast"; // fallback
+  return "fast";
 }
 
-function PostCard({ post, onLike, onSave, connection }) {
-  const [isEditing, setIsEditing] = useState(false);
+// ✅ Optimiza URLs de Unsplash al tamaño real mostrado
+function optimizeUnsplashUrl(url, width = 400, quality = 75) {
+  if (!url || !url.includes("unsplash.com")) return url;
+  const base = url.split("?")[0];
+  return `${base}?w=${width}&q=${quality}&auto=format&fit=crop`;
+}
+
+function PostCard({ post, index, onLike, onSave, connection }) {
+  const [isEditing, setIsEditing]       = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [showHeart, setShowHeart] = useState(false);
-  const [imgSrc, setImgSrc] = useState(null); // para lazy loading manual en slow
-  const imgContainerRef = React.useRef(null);
+  const [isExpanded, setIsExpanded]     = useState(false);
+  const [isLoaded, setIsLoaded]         = useState(false);
+  const [showHeart, setShowHeart]       = useState(false);
+  const [imgSrc, setImgSrc]             = useState(null);
+  const imgContainerRef                 = React.useRef(null);
 
-  // Estados de edición
-  const [title, setTitle] = useState(post?.title || "");
-  const [text, setText] = useState(post?.text || "");
-  const [tags, setTags] = useState(post?.tags?.join(", ") || "");
-  const [imageUrl, setImageUrl] = useState(post?.imageUrl || "");
+  const [title, setTitle]           = useState(post?.title || "");
+  const [text, setText]             = useState(post?.text || "");
+  const [tags, setTags]             = useState(post?.tags?.join(", ") || "");
+  const [imageUrl, setImageUrl]     = useState(post?.imageUrl || "");
   const [searchQuery, setSearchQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults]       = useState([]);
 
   const navigate = useNavigate();
 
-  // ── Derivamos los tres estados booleanos desde el prop normalizado ──────────
-  const networkStatus = normalizeConnection(connection); // "fast" | "slow" | "offline"
-  const isFast = networkStatus === "fast";
-  const isSlow = networkStatus === "slow";
-  const isOffline = networkStatus === "offline";
+  const networkStatus = normalizeConnection(connection);
+  const isFast        = networkStatus === "fast";
+  const isSlow        = networkStatus === "slow";
+  const isOffline     = networkStatus === "offline";
+  const isFirst       = index === 0; // ✅ para fetchPriority en LCP
 
-  const isOwner = auth.currentUser?.uid === post.authorId;
+  const isOwner    = auth.currentUser?.uid === post.authorId;
   const textToShow = isExpanded ? post.text : post.text?.substring(0, 150);
   const isLongText = post.text?.length > 150;
-
-  // ── Label visual del badge de red ──────────────────────────────────────────
   const networkLabel = isFast ? "FAST" : isSlow ? "3G / LENTO" : "OFFLINE";
 
-  // ── Lazy loading manual para "slow": empieza a cargar 400px ANTES de ser visible
+  // ✅ Lazy loading manual para slow — 400px antes de entrar al viewport
   useEffect(() => {
     if (networkStatus !== "slow" || !post.imageUrl) return;
 
@@ -61,13 +62,14 @@ function PostCard({ post, onLike, onSave, connection }) {
           observer.disconnect();
         }
       },
-      { rootMargin: "400px" } // empieza a cargar 400px antes de entrar al viewport
+      { rootMargin: "400px" }
     );
 
     const el = imgContainerRef.current;
     if (el) observer.observe(el);
     return () => observer.disconnect();
   }, [networkStatus, post.imageUrl]);
+
   useEffect(() => {
     if (!isOffline && post.id) {
       const timer = setTimeout(() => {
@@ -77,7 +79,6 @@ function PostCard({ post, onLike, onSave, connection }) {
     }
   }, [post.id, isOffline]);
 
-  // ── Búsqueda Unsplash solo al editar ───────────────────────────────────────
   const fetchUnsplash = async (q) => {
     try {
       const resp = await fetch(
@@ -99,7 +100,6 @@ function PostCard({ post, onLike, onSave, connection }) {
     }
   }, [searchQuery, isEditing]);
 
-  // ── Handlers ───────────────────────────────────────────────────────────────
   const handleHashtagClick = (tag) => {
     const cleanTag = tag.replace("#", "").toLowerCase().trim();
     navigate(`/explore?search=${cleanTag}`);
@@ -152,17 +152,13 @@ function PostCard({ post, onLike, onSave, connection }) {
     if (res.isConfirmed) await deleteDoc(doc(db, "posts", post.id));
   };
 
-  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className={`post-card mode-${networkStatus}`}>
 
-      {/* ══════════════ MODO EDICIÓN ══════════════ */}
       {isEditing ? (
         <div className="create-card" style={{ boxShadow: "none", padding: "0" }}>
           <div className="create-header">
-            <button type="button" className="back-button" onClick={() => setIsEditing(false)}>
-              ←
-            </button>
+            <button type="button" className="back-button" onClick={() => setIsEditing(false)}>←</button>
             <div className="create-title">Editar publicación</div>
           </div>
           <form onSubmit={handleUpdate}>
@@ -185,10 +181,7 @@ function PostCard({ post, onLike, onSave, connection }) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <div
-              className="image-results"
-              style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", margin: "10px 0" }}
-            >
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", margin: "10px 0" }}>
               {results.map((f) => (
                 <img
                   key={f.id}
@@ -204,9 +197,7 @@ function PostCard({ post, onLike, onSave, connection }) {
         </div>
 
       ) : (
-        /* ══════════════ MODO VISTA ══════════════ */
         <>
-          {/* Header */}
           <div className="post-header-pro">
             <div className="user-avatar-placeholder">
               {post.authorUsername?.charAt(0).toUpperCase()}
@@ -225,7 +216,6 @@ function PostCard({ post, onLike, onSave, connection }) {
               </div>
             </div>
 
-            {/* Opciones solo para el dueño y con conexión */}
             {isOwner && !isOffline && (
               <div className="post-options-container">
                 <button className="options-btn" onClick={() => setShowDropdown(!showDropdown)}>⋮</button>
@@ -243,19 +233,13 @@ function PostCard({ post, onLike, onSave, connection }) {
             )}
           </div>
 
-          {/* Body */}
           <div className="post-main-body">
-
-            {/* ── INTERFAZ OFFLINE: solo texto plano ── */}
             {isOffline ? (
               <div className="offline-text-mode">
                 {post.title && <h3 className="post-title">{post.title}</h3>}
                 <p className="post-text-pro">{post.text}</p>
                 {post.imageUrl && (
-                  <div
-                    className="offline-placeholder-pro"
-                    style={{ padding: "20px", background: "#f0f2f5", borderRadius: "15px", textAlign: "center", marginTop: "10px" }}
-                  >
+                  <div className="offline-placeholder-pro" style={{ padding: "20px", background: "#f0f2f5", borderRadius: "15px", textAlign: "center", marginTop: "10px" }}>
                     <p style={{ color: "#65676b", fontSize: "14px", fontWeight: "600" }}>
                       🚫 Modo Offline — imagen oculta para ahorrar datos
                     </p>
@@ -264,7 +248,6 @@ function PostCard({ post, onLike, onSave, connection }) {
               </div>
 
             ) : (
-              /* ── INTERFAZ FAST / SLOW: texto + tags + imagen ── */
               <>
                 {post.title && (
                   <h3 className="post-title" style={{ marginTop: 0, marginBottom: "8px" }}>
@@ -281,7 +264,6 @@ function PostCard({ post, onLike, onSave, connection }) {
                   )}
                 </p>
 
-                {/* Tags */}
                 <div className="post-tags" style={{ margin: "10px 0" }}>
                   {post.tags?.map((t, i) => (
                     <span
@@ -295,7 +277,6 @@ function PostCard({ post, onLike, onSave, connection }) {
                   ))}
                 </div>
 
-                {/* Imagen — fast: eager inmediato / slow: IntersectionObserver con 400px de margen */}
                 {post.imageUrl && (
                   <div
                     ref={imgContainerRef}
@@ -310,7 +291,6 @@ function PostCard({ post, onLike, onSave, connection }) {
                   >
                     {showHeart && <div className="floating-heart">❤️</div>}
 
-                    {/* Placeholder mientras el observer aún no disparó */}
                     {isSlow && !imgSrc && (
                       <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#aaa", fontSize: "13px" }}>
                         ⏳ Cargando...
@@ -319,9 +299,20 @@ function PostCard({ post, onLike, onSave, connection }) {
 
                     {(isFast || imgSrc) && (
                       <img
-                        src={isFast ? post.imageUrl : imgSrc}
+                        // ✅ Unsplash optimizado al tamaño real mostrado (400px ancho)
+                        src={optimizeUnsplashUrl(
+                          isFast ? post.imageUrl : imgSrc,
+                          400,
+                          isSlow ? 50 : 75  // calidad más baja en slow
+                        )}
                         alt="Contenido"
                         className="post-image-pro"
+                        // ✅ Dimensiones explícitas — elimina el CLS de 0.476
+                        width="400"
+                        height="500"
+                        // ✅ Primera imagen carga eager con alta prioridad — mejora LCP
+                        loading={isFirst ? "eager" : "lazy"}
+                        fetchPriority={isFirst ? "high" : "auto"}
                         onLoad={() => setIsLoaded(true)}
                         style={{
                           width: "100%",
@@ -339,7 +330,6 @@ function PostCard({ post, onLike, onSave, connection }) {
             )}
           </div>
 
-          {/* Acciones */}
           <div className="post-actions-pro">
             <div className="action-group">
               <button className="post-btn-pro" onClick={() => onLike(post)} disabled={isOffline}>
@@ -356,7 +346,6 @@ function PostCard({ post, onLike, onSave, connection }) {
         </>
       )}
 
-      {/* Sección de comentarios */}
       {showComments && !isOffline && (
         <CommentSection postId={post.id} connection={connection} />
       )}
