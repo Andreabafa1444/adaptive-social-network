@@ -24,8 +24,13 @@ function Login() {
 
       {/* Imagen sección */}
       <div className="login-image-section">
-        <img src="/images/Login.jpg" alt="Login" />
-      </div>
+      <img 
+src="/images/LoginFinal.webp"
+width="350"
+height="525"
+fetchpriority="high"
+alt="Login"
+/>      </div>
 
       {/* Card */}
       <div className="login-card-container">

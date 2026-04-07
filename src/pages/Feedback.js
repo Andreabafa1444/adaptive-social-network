@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { db, auth } from "../services/firebase";
 import { collection, addDoc, serverTimestamp, doc, getDoc, setDoc } from "firebase/firestore";
 import Navbar from "../components/NavBar";
-import "../styles/Feedback.css";
+import "../styles/FeedBack.css";
 
 const QUESTIONS = [
   {

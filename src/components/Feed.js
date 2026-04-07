@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { db, auth } from "../services/firebase";
+import { db } from "../services/firebase";
 import PostCard from "./PostCard";
-// ❌ Ya no importamos useNetworkMetrics — la detección ocurre en FeedPage
 import "../styles/feed.css";
 
 import {
@@ -15,76 +14,124 @@ import {
   arrayRemove
 } from "firebase/firestore";
 
-// connection llega como string: "fast" | "slow" | "offline"
-function Feed({ connection }) {
+function Feed({ connection, user, loading }) {
+
   const [posts, setPosts] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const unsubscribeAuth = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-    return () => unsubscribeAuth();
-  }, []);
+  useEffect(()=>{
 
-  useEffect(() => {
-    if (!currentUser) {
+    if(!user){
       setPosts([]);
       return;
     }
 
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    const q = query(
+      collection(db,"posts"),
+      orderBy("createdAt","desc")
+    );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setPosts(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    const unsubscribe = onSnapshot(q,(snapshot)=>{
+
+      setPosts(
+        snapshot.docs.map(doc=>({
+          id:doc.id,
+          ...doc.data()
+        }))
+      );
+
     });
 
-    return () => unsubscribe();
-  }, [currentUser]);
+    return ()=>unsubscribe();
 
-  const toggleLike = async (post) => {
-    if (!currentUser) return;
-    const postRef = doc(db, "posts", post.id);
-    const hasLiked = post.likes?.includes(currentUser.uid);
-    await updateDoc(postRef, {
-      likes: hasLiked ? arrayRemove(currentUser.uid) : arrayUnion(currentUser.uid),
+  },[user]);
+
+
+  const toggleLike = async(post)=>{
+
+    if(!user) return;
+
+    const postRef = doc(db,"posts",post.id);
+
+    const hasLiked = post.likes?.includes(user.uid);
+
+    await updateDoc(postRef,{
+      likes: hasLiked
+        ? arrayRemove(user.uid)
+        : arrayUnion(user.uid)
     });
+
   };
 
-  const toggleSave = async (post) => {
-    if (!currentUser) return;
-    const postRef = doc(db, "posts", post.id);
-    const hasSaved = post.savedBy?.includes(currentUser.uid);
-    await updateDoc(postRef, {
-      savedBy: hasSaved ? arrayRemove(currentUser.uid) : arrayUnion(currentUser.uid),
+
+  const toggleSave = async(post)=>{
+
+    if(!user) return;
+
+    const postRef = doc(db,"posts",post.id);
+
+    const hasSaved = post.savedBy?.includes(user.uid);
+
+    await updateDoc(postRef,{
+      savedBy: hasSaved
+        ? arrayRemove(user.uid)
+        : arrayUnion(user.uid)
     });
+
   };
 
-  if (loading) return <div className="feed-loading">Cargando...</div>;
 
-  if (!currentUser) {
-    return <div className="feed-loading">Por favor inicia sesión para ver publicaciones</div>;
+  if(loading){
+
+    return (
+      <div className="feed-loading">
+        Restaurando sesión...
+      </div>
+    );
+  
+  }
+  
+  if(!user){
+  
+    return (
+      <div className="feed-loading">
+        Por favor inicia sesión
+      </div>
+    );
+  
   }
 
+
   return (
+
     <div className="feed-list">
-      {posts.length === 0 ? (
-        <div className="feed-empty">No hay publicaciones todavía</div>
-      ) : (
-        posts.map((post) => (
+
+      {posts.length===0 ? (
+
+        <div className="feed-empty">
+          No hay publicaciones todavía
+        </div>
+
+      ):(
+        
+        posts.map((post,index)=>(
+
           <PostCard
             key={post.id}
             post={post}
+            index={index}
             onLike={toggleLike}
             onSave={toggleSave}
-            connection={connection} // ← string limpio directo al PostCard
+            connection={connection}
           />
+
         ))
+
       )}
+
     </div>
+
   );
+
 }
 
 export default Feed;

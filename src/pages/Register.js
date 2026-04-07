@@ -35,7 +35,13 @@ function Register() {
     <div className="login-wrapper">
 
       <div className="login-image-section">
-        <img src="/images/Register.jpg" alt="Register" />
+      <img 
+src="/images/RegisterFinal.webp"
+width="350"
+height="525"
+fetchpriority="high"
+alt="Login"
+/>
       </div>
 
       <div className="login-card-container">
