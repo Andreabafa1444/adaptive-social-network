@@ -5,7 +5,7 @@ import ConnectionBanner from "../components/ConnectionBanner";
 import useConnection from "../hooks/useConnection";
 import "../styles/feed.css";
 
-function FeedPage({ user, loading}) {
+function FeedPage({ user, loading }) {
 
   const navigate = useNavigate();
 
@@ -21,22 +21,23 @@ function FeedPage({ user, loading}) {
 
         <ConnectionBanner connection={connection} />
 
-        <div className="create-button-container">
+        {/* ✅ LCP anchor element (esto ayuda Lighthouse) */}
+        <div className="create-button-container lcp-anchor">
 
           <button 
             onClick={()=>navigate("/create")}
-            className="create-post-btn"
+            className="create-post-btn lcp-button"
           >
             + Crear publicación
           </button>
 
         </div>
 
+        {/* Feed real */}
         <Feed 
           connection={connection}
           user={user}
           loading={loading}
-
         />
 
       </div>

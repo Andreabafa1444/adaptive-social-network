@@ -9,95 +9,53 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
-    <!-- ✅ Preconnects corregidos — sin crossorigin en Firebase -->
-    <link rel="preconnect" href="https://adaptive-social-network.firebaseapp.com" />
-    <link rel="preconnect" href="https://www.googleapis.com" />
-    <link rel="preconnect" href="https://firestore.googleapis.com" />
-    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://adaptive-social-network.firebaseapp.com" crossorigin />
+    <link rel="preconnect" href="https://apis.google.com" crossorigin />
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+    <link rel="dns-prefetch" href="https://www.googleapis.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
 
-    <!-- ✅ CSS crítico inline — elimina render blocking de 300ms -->
     <style>
       *, *::before, *::after { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: #f0f2f5;
-        color: #1c1e21;
-      }
+      body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #1c1e21; }
       #root { min-height: 100vh; }
-
-      /* Feed layout */
-      .feed-wrapper  { width: 100%; }
+      .feed-wrapper { width: 100%; }
       .feed-container { max-width: 680px; margin: 0 auto; padding: 16px; }
-      .feed-list     { display: flex; flex-direction: column; }
-
-      /* Post card base */
-      .post-card {
-        background: #fff;
-        border-radius: 28px;
-        padding: 24px;
-        margin-bottom: 25px;
-        box-shadow: 0 10px 30px rgba(0,0,0,.05);
-        border: 1px solid #f0f0f0;
-        position: relative;
-      }
-
-      /* Post header */
-      .post-header-pro {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 16px;
-      }
-      .user-avatar-placeholder {
-        width: 48px; height: 48px;
-        background: #e4e6eb;
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 700; font-size: 1.2rem; color: #4b4b4b;
-        flex-shrink: 0;
-      }
-
-      /* Image container — reserva espacio antes de cargar */
-      .image-container {
-        position: relative;
-        background: #f0f2f5;
-        border-radius: 22px;
-        overflow: hidden;
-        margin-top: 12px;
-      }
-      .post-image-pro {
-        width: 100%;
-        display: block;
-        aspect-ratio: 4 / 5;
-        object-fit: cover;
-        border-radius: 22px;
-      }
-
-      /* Skeleton base — evita CLS mientras carga Firestore */
-      .skeleton-header {
-        display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
-      }
-      .skeleton-avatar {
-        width: 48px; height: 48px; border-radius: 50%; background: #e4e6eb; flex-shrink: 0;
-      }
+      .feed-list { display: flex; flex-direction: column; }
+      .post-card { background: #fff; border-radius: 28px; padding: 24px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,.05); border: 1px solid #f0f0f0; position: relative; }
+      .post-header-pro { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+      .user-avatar-placeholder { width: 48px; height: 48px; background: #e4e6eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: #4b4b4b; flex-shrink: 0; }
+      .image-container { position: relative; background: #f0f2f5; border-radius: 22px; overflow: hidden; margin-top: 12px; }
+      .post-image-pro { width: 100%; display: block; aspect-ratio: 4/5; object-fit: cover; border-radius: 22px; }
+      .skeleton-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+      .skeleton-avatar { width: 48px; height: 48px; border-radius: 50%; background: #e4e6eb; flex-shrink: 0; }
       .skeleton-lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-      .skeleton-line  { height: 14px; border-radius: 8px; background: #e4e6eb; }
-      .skeleton-image {
-        width: 100%; aspect-ratio: 4 / 5; border-radius: 22px;
-        background: #e4e6eb; margin-top: 12px;
-      }
+      .skeleton-line { height: 14px; border-radius: 8px; background: #e4e6eb; }
+      .skeleton-image { width: 100%; aspect-ratio: 4/5; border-radius: 22px; background: #e4e6eb; margin-top: 12px; }
       .skeleton-pulse { animation: skeletonPulse 1.4s ease-in-out infinite; }
-      @keyframes skeletonPulse {
-        0%, 100% { opacity: 1; }
-        50%       { opacity: 0.4; }
-      }
+      @keyframes skeletonPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
     </style>
 
     <title>Adaptive Social Network</title>
+
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div style="max-width:680px;margin:0 auto;padding:16px;">
+        <div style="background:#fff;border-radius:28px;padding:24px;margin-bottom:25px;box-shadow:0 10px 30px rgba(0,0,0,.05);">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:48px;height:48px;background:#e4e6eb;border-radius:50%;flex-shrink:0;"></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+              <div style="height:14px;border-radius:8px;background:#e4e6eb;width:60%;"></div>
+              <div style="height:14px;border-radius:8px;background:#e4e6eb;width:40%;"></div>
+            </div>
+          </div>
+          <!-- Este div debe ser MÁS GRANDE que la imagen de Unsplash -->
+          <div id="lcp-target" style="width:100%;aspect-ratio:4/5;border-radius:22px;background:#e4e6eb;margin-top:12px;min-height:400px;"></div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

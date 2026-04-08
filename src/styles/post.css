@@ -337,3 +337,14 @@
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.4; }
 }
+/* ✅ Fix CLS modo slow — reserva altura fija antes de que el observer dispare */
+.post-card.mode-slow .image-container {
+  min-height: 0;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+}
+
+.post-card.mode-slow .image-container:not(:has(img)) {
+  background: #f0f2f5;
+  border-radius: 22px;
+}

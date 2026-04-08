@@ -317,7 +317,29 @@
 }
 
 
+.lcp-anchor{
 
+  min-height:80px;
+  
+  display:flex;
+  
+  align-items:center;
+  
+  justify-content:center;
+  
+  }
+  
+  .lcp-button{
+  
+  font-size:18px;
+  
+  padding:14px 22px;
+  
+  border-radius:12px;
+  
+  font-weight:600;
+  
+  }
 
 
 

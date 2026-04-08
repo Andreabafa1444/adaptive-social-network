@@ -14,7 +14,6 @@ import {
   arrayRemove
 } from "firebase/firestore";
 
-// ✅ Skeleton card — reserva espacio mientras carga Firestore
 function SkeletonCard() {
   return (
     <div className="post-card skeleton-card">
@@ -34,8 +33,8 @@ function SkeletonCard() {
 
 function Feed({ connection, user, loading }) {
 
-  const [posts, setPosts]           = useState([]);
-  const [firestoreReady, setFirestoreReady] = useState(false); // ✅ saber si ya respondió
+  const [posts, setPosts]                   = useState([]);
+  const [firestoreReady, setFirestoreReady] = useState(false);
 
   useEffect(() => {
 
@@ -52,12 +51,9 @@ function Feed({ connection, user, loading }) {
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       setPosts(
-        snapshot.docs.map(d => ({
-          id: d.id,
-          ...d.data()
-        }))
+        snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
       );
-      setFirestoreReady(true); // ✅ Firestore ya respondió (aunque sea vacío)
+      setFirestoreReady(true);
     });
 
     return () => unsubscribe();
@@ -84,7 +80,7 @@ function Feed({ connection, user, loading }) {
   };
 
 
-  if (loading) {
+  if (loading || (!firestoreReady && posts.length === 0)) {
     return (
       <div className="feed-list">
         <SkeletonCard />
@@ -102,28 +98,13 @@ function Feed({ connection, user, loading }) {
     );
   }
 
-  // ✅ Firestore aún no responde — muestra skeletons en vez de nada
-  if (!firestoreReady) {
-    return (
-      <div className="feed-list">
-        <SkeletonCard />
-        <SkeletonCard />
-        <SkeletonCard />
-      </div>
-    );
-  }
-
   return (
     <div className="feed-list">
-
       {posts.length === 0 ? (
-
         <div className="feed-empty">
           No hay publicaciones todavía
         </div>
-
       ) : (
-
         posts.map((post, index) => (
           <PostCard
             key={post.id}
@@ -134,9 +115,7 @@ function Feed({ connection, user, loading }) {
             connection={connection}
           />
         ))
-
       )}
-
     </div>
   );
 
