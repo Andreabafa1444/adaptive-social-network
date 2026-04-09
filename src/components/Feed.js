@@ -14,109 +14,272 @@ import {
   arrayRemove
 } from "firebase/firestore";
 
-function SkeletonCard() {
-  return (
+/* =========================
+   SAFE SKELETON (NO TOCA POSTCARD)
+========================= */
+
+function SkeletonCard(){
+
+  return(
+
     <div className="post-card skeleton-card">
-      <div className="skeleton-header">
-        <div className="skeleton-avatar skeleton-pulse" />
-        <div className="skeleton-lines">
-          <div className="skeleton-line skeleton-pulse" style={{ width: "60%" }} />
-          <div className="skeleton-line skeleton-pulse" style={{ width: "40%" }} />
+
+      <div className="sk-header">
+
+        <div className="sk-avatar sk-shimmer"/>
+
+        <div className="sk-user">
+
+          <div className="sk-line sk-user-line sk-shimmer"/>
+
+          <div className="sk-line sk-date-line sk-shimmer"/>
+
         </div>
+
       </div>
-      <div className="skeleton-line skeleton-pulse" style={{ width: "90%", marginBottom: 8 }} />
-      <div className="skeleton-line skeleton-pulse" style={{ width: "70%", marginBottom: 16 }} />
-      <div className="skeleton-image skeleton-pulse" />
+
+      <div className="sk-line sk-title sk-shimmer"/>
+
+      <div className="sk-line sk-text sk-shimmer"/>
+
+      <div className="sk-line sk-text sk-short sk-shimmer"/>
+
+      <div className="sk-image sk-shimmer"/>
+
+      <div className="sk-actions">
+
+        <div className="sk-action sk-shimmer"/>
+
+        <div className="sk-action sk-shimmer"/>
+
+        <div className="sk-action sk-shimmer"/>
+
+      </div>
+
     </div>
+
   );
+
 }
+
+/* =========================
+   FEED
+========================= */
 
 function Feed({ connection, user, loading }) {
 
-  const [posts, setPosts]                   = useState([]);
-  const [firestoreReady, setFirestoreReady] = useState(false);
+  const [posts,setPosts]=useState(null);
 
-  useEffect(() => {
+  const [firestoreReady,setFirestoreReady]=useState(false);
 
-    if (!user) {
-      setPosts([]);
+/* =========================
+   FIRESTORE LISTENER
+========================= */
+
+  useEffect(()=>{
+
+    if(!user){
+
+      setPosts(null);
+
       setFirestoreReady(false);
+
       return;
+
     }
 
-    const q = query(
-      collection(db, "posts"),
-      orderBy("createdAt", "desc")
+    const q=query(
+
+      collection(db,"posts"),
+
+      orderBy("createdAt","desc")
+
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setPosts(
-        snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
-      );
+    const unsubscribe=onSnapshot(q,(snapshot)=>{
+
+      const safePosts=snapshot.docs.map(d=>{
+
+        const data=d.data();
+
+        return{
+
+          id:d.id,
+
+          title:data.title || "",
+
+          text:data.text || "",
+
+          image:data.image || "",
+
+          likes:data.likes || [],
+
+          savedBy:data.savedBy || [],
+
+          author:data.author || "User",
+
+          createdAt:data.createdAt || null,
+
+          ...data
+
+        };
+
+      });
+
+      setPosts(safePosts);
+
       setFirestoreReady(true);
+
     });
 
-    return () => unsubscribe();
+    return()=>unsubscribe();
 
-  }, [user]);
+  },[user]);
 
+/* =========================
+   LIKE
+========================= */
 
-  const toggleLike = async (post) => {
-    if (!user) return;
-    const postRef = doc(db, "posts", post.id);
-    const hasLiked = post.likes?.includes(user.uid);
-    await updateDoc(postRef, {
-      likes: hasLiked ? arrayRemove(user.uid) : arrayUnion(user.uid)
+  const toggleLike=async(post)=>{
+
+    if(!user)return;
+
+    const postRef=doc(db,"posts",post.id);
+
+    const hasLiked=post.likes?.includes(user.uid);
+
+    await updateDoc(postRef,{
+
+      likes:hasLiked
+
+      ?arrayRemove(user.uid)
+
+      :arrayUnion(user.uid)
+
     });
+
   };
 
-  const toggleSave = async (post) => {
-    if (!user) return;
-    const postRef = doc(db, "posts", post.id);
-    const hasSaved = post.savedBy?.includes(user.uid);
-    await updateDoc(postRef, {
-      savedBy: hasSaved ? arrayRemove(user.uid) : arrayUnion(user.uid)
+/* =========================
+   SAVE
+========================= */
+
+  const toggleSave=async(post)=>{
+
+    if(!user)return;
+
+    const postRef=doc(db,"posts",post.id);
+
+    const hasSaved=post.savedBy?.includes(user.uid);
+
+    await updateDoc(postRef,{
+
+      savedBy:hasSaved
+
+      ?arrayRemove(user.uid)
+
+      :arrayUnion(user.uid)
+
     });
+
   };
 
+/* =========================
+   LOADING STATE
+========================= */
 
-  if (loading || (!firestoreReady && posts.length === 0)) {
-    return (
+  if(
+
+    loading ||
+
+    !firestoreReady ||
+
+    posts===null
+
+  ){
+
+    return(
+
       <div className="feed-list">
-        <SkeletonCard />
-        <SkeletonCard />
-        <SkeletonCard />
+
+        <SkeletonCard/>
+
+        <SkeletonCard/>
+
+        <SkeletonCard/>
+
       </div>
+
     );
+
   }
 
-  if (!user) {
-    return (
+/* =========================
+   NO USER
+========================= */
+
+  if(!user){
+
+    return(
+
       <div className="feed-loading">
+
         Por favor inicia sesión
+
       </div>
+
     );
+
   }
 
-  return (
+/* =========================
+   EMPTY
+========================= */
+
+  if(posts.length===0){
+
+    return(
+
+      <div className="feed-empty">
+
+        No hay publicaciones todavía
+
+      </div>
+
+    );
+
+  }
+
+/* =========================
+   REAL FEED
+========================= */
+
+  return(
+
     <div className="feed-list">
-      {posts.length === 0 ? (
-        <div className="feed-empty">
-          No hay publicaciones todavía
-        </div>
-      ) : (
-        posts.map((post, index) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            index={index}
-            onLike={toggleLike}
-            onSave={toggleSave}
-            connection={connection}
-          />
-        ))
-      )}
+
+      {posts.map((post,index)=>(
+
+        <PostCard
+
+          key={post.id}
+
+          post={post}
+
+          index={index}
+
+          onLike={toggleLike}
+
+          onSave={toggleSave}
+
+          connection={connection}
+
+        />
+
+      ))}
+
     </div>
+
   );
 
 }

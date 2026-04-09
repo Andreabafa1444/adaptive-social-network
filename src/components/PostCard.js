@@ -6,348 +6,285 @@ import CommentSection from "./CommentSection";
 import Swal from "sweetalert2";
 import "../styles/post.css";
 
-function normalizeConnection(raw) {
-  if (!raw || raw === "4g" || raw === "full" || raw === "fast") return "fast";
-  if (raw === "3g" || raw === "limited" || raw === "unstable") return "slow";
-  if (raw === "2g" || raw === "slow-2g" || raw === "slow") return "slow";
-  if (raw === "offline") return "offline";
-  return "fast";
+function normalizeConnection(raw){
+
+if(!raw || raw==="4g" || raw==="full" || raw==="fast") return "fast";
+
+if(raw==="3g" || raw==="limited" || raw==="unstable") return "slow";
+
+if(raw==="2g" || raw==="slow-2g" || raw==="slow") return "slow";
+
+if(raw==="offline") return "offline";
+
+return "fast";
+
 }
 
-function optimizeUnsplashUrl(url, width = 400, quality = 75) {
-  if (!url || !url.includes("unsplash.com")) return url;
-  const base = url.split("?")[0];
-  return `${base}?w=${width}&q=${quality}&auto=format&fit=crop`;
+function optimizeUnsplashUrl(url,width=400,quality=75){
+
+if(!url || !url.includes("unsplash.com")) return url;
+
+const base=url.split("?")[0];
+
+return `${base}?w=${width}&q=${quality}&auto=format&fit=crop`;
+
 }
 
-function PostCard({ post, index, onLike, onSave, connection }) {
+function PostCard({post,index,onLike,onSave,connection}){
 
-  const [isEditing, setIsEditing]       = useState(false);
-  const [showComments, setShowComments] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [isExpanded, setIsExpanded]     = useState(false);
-  const [isLoaded, setIsLoaded]         = useState(false);
-  const [showHeart, setShowHeart]       = useState(false);
-  const [imgSrc, setImgSrc]             = useState(null);
-  const imgContainerRef                 = React.useRef(null);
+const [showComments,setShowComments]=useState(false);
 
-  const [title, setTitle] = useState(post?.title || "");
-  const [text, setText] = useState(post?.text || "");
-  const [tags, setTags] = useState(post?.tags?.join(", ") || "");
-  const [imageUrl, setImageUrl] = useState(post?.imageUrl || "");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [results, setResults] = useState([]);
+const [isExpanded,setIsExpanded]=useState(false);
 
-  const navigate = useNavigate();
+const [isLoaded,setIsLoaded]=useState(false);
 
-  const networkStatus = normalizeConnection(connection);
+const [showHeart,setShowHeart]=useState(false);
 
-  const isFast = networkStatus === "fast";
-  const isSlow = networkStatus === "slow";
-  const isOffline = networkStatus === "offline";
+const [imgSrc,setImgSrc]=useState(null);
 
-  const isOwner = auth.currentUser?.uid === post.authorId;
+const imgContainerRef=React.useRef(null);
 
-  const textToShow = isExpanded ? post.text : post.text?.substring(0,150);
+const navigate=useNavigate();
 
-  const isLongText = post.text?.length > 150;
+const networkStatus=normalizeConnection(connection);
 
-  const networkLabel =
-    isFast ? "FAST" :
-    isSlow ? "3G / LENTO" :
-    "OFFLINE";
+const isFast=networkStatus==="fast";
 
-  useEffect(()=>{
+const isSlow=networkStatus==="slow";
 
-    if(networkStatus !== "slow" || !post.imageUrl) return;
+const isOffline=networkStatus==="offline";
 
-    const observer = new IntersectionObserver(
+const isOwner=auth.currentUser?.uid===post.authorId;
 
-      ([entry])=>{
+const textToShow=isExpanded
 
-        if(entry.isIntersecting){
+?post.text
 
-          setImgSrc(post.imageUrl);
+:post.text?.substring(0,150);
 
-          observer.disconnect();
+const isLongText=post.text?.length>150;
 
-        }
+const networkLabel=
 
-      },
+isFast?"FAST":
 
-      {rootMargin:"400px"}
+isSlow?"3G / LENTO":
 
-    );
+"OFFLINE";
 
-    const el = imgContainerRef.current;
+/* lazy image slow network */
 
-    if(el) observer.observe(el);
+useEffect(()=>{
 
-    return ()=>observer.disconnect();
+if(networkStatus!=="slow" || !post.imageUrl) return;
 
-  },[networkStatus,post.imageUrl]);
+const observer=new IntersectionObserver(
 
+([entry])=>{
 
-  useEffect(()=>{
+if(entry.isIntersecting){
 
-    if(!isOffline && post.id){
+setImgSrc(post.imageUrl);
 
-      const timer = setTimeout(()=>{
+observer.disconnect();
 
-        updateDoc(
-          doc(db,"posts",post.id),
-          {views:increment(1)}
-        ).catch(()=>{});
+}
 
-      },2000);
+},
 
-      return ()=>clearTimeout(timer);
+{rootMargin:"400px"}
 
-    }
+);
 
-  },[post.id,isOffline]);
+const el=imgContainerRef.current;
 
+if(el) observer.observe(el);
 
-  const fetchUnsplash = async(q)=>{
+return()=>observer.disconnect();
 
-    try{
+},[networkStatus,post.imageUrl]);
 
-      const resp = await fetch(
+/* views counter */
 
-        `https://api.unsplash.com/search/photos?query=${q}&client_id=${process.env.REACT_APP_UNSPLASH_KEY}`
+useEffect(()=>{
 
-      );
+if(!isOffline && post.id){
 
-      const data = await resp.json();
+const timer=setTimeout(()=>{
 
-      setResults(data.results || []);
+updateDoc(
 
-    }
+doc(db,"posts",post.id),
 
-    catch(e){
+{views:increment(1)}
 
-      console.error(e);
+).catch(()=>{});
 
-    }
+},2000);
 
-  };
+return()=>clearTimeout(timer);
 
+}
 
-  useEffect(()=>{
+},[post.id,isOffline]);
 
-    if(isEditing && searchQuery.length > 2){
+/* double like */
 
-      const timer = setTimeout(()=>{
+const handleDoubleTap=()=>{
 
-        fetchUnsplash(searchQuery);
+if(isOffline) return;
 
-      },500);
+onLike(post);
 
-      return ()=>clearTimeout(timer);
+setShowHeart(true);
 
-    }
+setTimeout(()=>{
 
-    else{
+setShowHeart(false);
 
-      setResults([]);
+},800);
 
-    }
+};
 
-  },[searchQuery,isEditing]);
+/* =========================
+   RETURN UI
+========================= */
 
+return(
 
-  const handleHashtagClick=(tag)=>{
+<div className={`post-card mode-${networkStatus}`}>
 
-    const cleanTag = tag
-      .replace("#","")
-      .toLowerCase()
-      .trim();
+<div className="post-header-pro">
 
-    navigate(`/explore?search=${cleanTag}`);
+<div className="user-avatar-placeholder">
 
-  };
+{post.authorUsername?.charAt(0).toUpperCase()}
 
+</div>
 
-  const handleDoubleTap=()=>{
+<div className="post-user-info">
 
-    if(isOffline) return;
+<div className="post-username-pro">
 
-    onLike(post);
+{post.authorUsername}
 
-    setShowHeart(true);
+<span className="verified-badge">
 
-    setTimeout(()=>{
+✔
 
-      setShowHeart(false);
+</span>
 
-    },800);
+{isOwner &&(
 
-  };
+<span style={{fontSize:"12px",color:"#888"}}>
 
+(Tú)
 
-  const handleUpdate = async(e)=>{
+</span>
 
-    e.preventDefault();
+)}
 
-    if(!isOwner) return;
+</div>
 
-    const tagsArr = tags
-      .split(",")
-      .map(t=>t.trim().toLowerCase().replace("#",""))
-      .filter(t=>t!== "");
+<div className="post-timestamp">
 
-    await updateDoc(
+👁️ {post.views || 0} vistas •
 
-      doc(db,"posts",post.id),
+<span className={`network-badge-pill ${networkStatus}`}>
 
-      {
+{networkLabel}
 
-        title,
-        text,
-        tags:tagsArr,
-        imageUrl,
-        updatedAt:serverTimestamp()
+</span>
 
-      }
+</div>
 
-    );
+</div>
 
-    setIsEditing(false);
+</div>
 
-    Swal.fire({
+{/* TITLE */}
 
-      icon:"success",
-      title:"¡Actualizado!",
-      toast:true,
-      position:"top-end",
-      timer:2000,
-      showConfirmButton:false
+{post.title &&(
 
-    });
+<div className="post-title">
 
-  };
+{post.title}
 
+</div>
 
-  const handleDelete = async()=>{
+)}
 
-    setShowDropdown(false);
+{/* TEXT */}
 
-    if(!isOwner) return;
+{post.text &&(
 
-    const res = await Swal.fire({
+<div className="post-text">
 
-      title:"¿Eliminar publicación?",
-      text:"No podrás revertir esto",
-      icon:"warning",
-      showCancelButton:true,
-      confirmButtonColor:"#d33",
-      cancelButtonColor:"#3085d6",
-      confirmButtonText:"Sí, eliminar"
+{textToShow}
 
-    });
+{isLongText &&(
 
-    if(res.isConfirmed){
+<span
 
-      await deleteDoc(
-        doc(db,"posts",post.id)
-      );
+className="read-more"
 
-    }
+onClick={()=>setIsExpanded(!isExpanded)}
 
-  };
+>
 
+{isExpanded?" ver menos":"...ver más"}
 
-  return(
+</span>
 
-    <div className={`post-card mode-${networkStatus}`}>
+)}
 
-      <>
-        <div className="post-header-pro">
+</div>
 
-          <div className="user-avatar-placeholder">
+)}
 
-            {post.authorUsername?.charAt(0).toUpperCase()}
+{/* IMAGE */}
 
-          </div>
+{post.imageUrl &&(
 
-          <div className="post-user-info">
+<div
 
-            <div className="post-username-pro">
+ref={imgContainerRef}
 
-              {post.authorUsername}
+className="image-container"
 
-              <span className="verified-badge">
+onDoubleClick={handleDoubleTap}
 
-                ✔
+style={{
 
-              </span>
+position:"relative",
 
-              {isOwner && (
+borderRadius:"15px"
 
-                <span style={{fontSize:"12px",color:"#888"}}>
+}}
 
-                  (Tú)
+>
 
-                </span>
+{showHeart &&(
 
-              )}
+<div className="floating-heart">
 
-            </div>
+❤️
 
-            <div className="post-timestamp">
+</div>
 
-              👁️ {post.views || 0} vistas • 
+)}
 
-              <span className={`network-badge-pill ${networkStatus}`}>
-
-                {networkLabel}
-
-              </span>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        {post.imageUrl && (
-
-          <div
-
-            ref={imgContainerRef}
-
-            className="image-container"
-
-            onDoubleClick={handleDoubleTap}
-
-            style={{
-              position:"relative",
-              borderRadius:"15px"
-            }}
-
-          >
-
-            {showHeart && (
-
-              <div className="floating-heart">
-
-                ❤️
-
-              </div>
-
-            )}
-
-{(isFast || imgSrc) &&(
+{(isFast || imgSrc)&&(
 
 <img
 
 src={optimizeUnsplashUrl(
 
-isFast ? post.imageUrl : imgSrc,
+isFast?post.imageUrl:imgSrc,
 
 350,
-isSlow ? 50:70
+
+isSlow?50:70
 
 )}
 
@@ -356,9 +293,9 @@ alt="Contenido"
 className="post-image-pro"
 
 width="350"
+
 height="500"
 
-/* 🔥 FIX IMPORTANTE */
 loading={index===0?"eager":"lazy"}
 
 fetchPriority={index===0?"high":"auto"}
@@ -393,8 +330,77 @@ filter:isSlow?"grayscale(0.4)":"none"
 
 )}
 
-</>
+{/* TAGS */}
 
+{post.tags?.length>0 &&(
+
+<div className="post-tags">
+
+{post.tags.map(tag=>(
+
+<span
+
+key={tag}
+
+className="tag"
+
+onClick={()=>navigate(`/explore?search=${tag}`)}
+
+>
+
+#{tag}
+
+</span>
+
+))}
+
+</div>
+
+)}
+
+{/* ACTIONS */}
+
+<div className="post-actions">
+
+<button
+
+onClick={()=>onLike(post)}
+
+disabled={isOffline}
+
+>
+
+❤️ {post.likes?.length || 0}
+
+</button>
+
+<button
+
+onClick={()=>setShowComments(!showComments)}
+
+disabled={isOffline}
+
+>
+
+💬
+
+</button>
+
+<button
+
+onClick={()=>onSave(post)}
+
+disabled={isOffline}
+
+>
+
+🔖
+
+</button>
+
+</div>
+
+{/* COMMENTS */}
 
 {showComments && !isOffline &&(
 
