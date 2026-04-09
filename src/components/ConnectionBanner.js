@@ -1,6 +1,5 @@
 import React from "react";
 
-// Estilos inline para no depender del CSS del feed y que se vea igual en todas las páginas
 const styles = {
   pill: {
     display: "inline-flex",
@@ -40,7 +39,6 @@ const styles = {
   },
 };
 
-// Inject pulse keyframe once
 if (typeof document !== "undefined" && !document.getElementById("cb-pulse")) {
   const s = document.createElement("style");
   s.id = "cb-pulse";
@@ -49,9 +47,9 @@ if (typeof document !== "undefined" && !document.getElementById("cb-pulse")) {
 }
 
 const MODES = {
-  fast:    { label: "FAST · 4G",        style: styles.fast    },
-  slow:    { label: "SLOW · 3G",        style: styles.slow    },
-  offline: { label: "OFFLINE",          style: styles.offline },
+  fast:    { label: "FAST · 4G",  style: styles.fast    },
+  slow:    { label: "SLOW · 3G",  style: styles.slow    },
+  offline: { label: "OFFLINE",    style: styles.offline },
 };
 
 function ConnectionBanner({ connection }) {

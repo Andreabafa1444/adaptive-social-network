@@ -2,94 +2,101 @@
    ESTRUCTURA GENERAL Y HEADER
    ============================================================ */
 
-   .container { 
-    max-width: 800px; 
-    margin: 0 auto; 
-    padding: 20px; 
+   .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
   }
   
-  .news-header { 
-    margin-top: 80px; 
-    margin-bottom: 30px; 
+  .news-header {
+    margin-top: 80px;
+    margin-bottom: 30px;
   }
   
-  .title-section { 
-    display: flex; 
-    align-items: center; 
-    gap: 15px; 
-    margin-bottom: 15px; 
+  .title-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
   }
   
-  .topics-bar { 
-    display: flex; 
-    gap: 10px; 
-    overflow-x: auto; 
-    padding-bottom: 10px; 
-    scrollbar-width: none; 
+  .topics-bar {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scrollbar-width: none;
   }
   
-  .topics-bar button { 
-    padding: 8px 18px; 
-    border-radius: 20px; 
-    border: 1px solid #ddd; 
-    background: #fff; 
-    cursor: pointer; 
-    transition: 0.2s;
+  .topics-bar button {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
     white-space: nowrap;
   }
   
-  .topics-bar button.active { 
-    background: #000; 
-    color: #fff; 
-    border-color: #000; 
+  .topics-bar button.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
   }
   
   /* ============================================================
      CARDS
      ============================================================ */
   
+  /* FIX CLS: min-height reserva espacio antes de que cargue Firebase */
+  .news-list-container {
+    min-height: 300px;
+  }
+  
   .social-card-mini {
-    display: flex; 
-    gap: 15px; 
-    background: #fff; 
+    display: flex;
+    gap: 15px;
+    background: #fff;
     padding: 15px 0;
-    border-bottom: 1px solid #eee; 
-    cursor: pointer; 
-    transition: 0.2s;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: opacity 0.2s;
   }
   
   .social-card-mini:hover { opacity: 0.8; }
   
-  .card-image-box { 
-    width: 100px; 
-    height: 100px; 
-    flex-shrink: 0; 
+  .card-image-box {
+    width: 150px;
+    height: 100px;
+    flex-shrink: 0;
   }
   
-  .card-image-box img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-    border-radius: 12px; 
+  .card-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
   }
   
-  .card-content-box h3 { 
-    font-size: 1.1rem; 
-    margin: 5px 0; 
-    line-height: 1.3; 
-    font-weight: 700; 
-    color: #1a1a1a; 
+  .card-content-box h3 {
+    font-size: 1.1rem;
+    margin: 5px 0;
+    line-height: 1.3;
+    font-weight: 700;
+    color: #1a1a1a;
   }
   
-  .source-label { 
-    font-size: 0.75rem; 
-    color: #666; 
-    font-weight: 600; 
+  /* FIX A11y: #444 tiene ratio 9.7:1 (antes #666 = 5.7:1, insuficiente) */
+  .source-label {
+    font-size: 0.75rem;
+    color: #444;
+    font-weight: 600;
   }
   
-  .card-footer-mini { 
-    font-size: 0.8rem; 
-    color: #999;
+  /* FIX A11y: #666 tiene ratio 5.7:1 (antes #999 = 2.8:1, insuficiente) */
+  .card-footer-mini {
+    font-size: 0.8rem;
+    color: #666;
     margin-top: 6px;
   }
   
@@ -98,18 +105,26 @@
      ============================================================ */
   
   .modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
-    display: flex; justify-content: center; align-items: center; z-index: 3000;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
   }
   
   .modal-content-social {
-    background: white; width: 90%; max-width: 600px; border-radius: 28px;
-    overflow: hidden; position: relative;
+    background: #fff;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    border-radius: 28px;
+    overflow-y: auto;
+    position: relative;
     box-shadow: 0 10px 40px rgba(0,0,0,0.15);
     animation: modalIn 0.3s ease-out;
-    max-height: 90vh;
-    overflow-y: auto;
   }
   
   @keyframes modalIn {
@@ -119,9 +134,12 @@
   
   .modal-image-container { padding: 15px 15px 0; }
   
-  .modal-img-social { 
-    width: 100%; height: auto; max-height: 350px; 
-    object-fit: cover; border-radius: 20px; 
+  .modal-img-social {
+    width: 100%;
+    height: auto;
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 20px;
   }
   
   .modal-body-social { padding: 25px; }
@@ -147,41 +165,63 @@
   }
   
   .close-modal-social {
-    position: absolute; top: 15px; left: 15px;
-    background: #fff; border: 1px solid #ddd;
-    width: 32px; height: 32px; border-radius: 8px;
-    font-size: 18px; display: flex; align-items: center;
-    justify-content: center; cursor: pointer; z-index: 100;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
   
   .full-note-link {
-    display: block; margin-top: 15px;
-    color: #007bff; text-decoration: none;
-    font-weight: 600; font-size: 14px;
+    display: block;
+    margin-top: 15px;
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
   }
   
   .full-note-link:hover { text-decoration: underline; }
   
-  /* Pills de interacción */
+  /* ── Pills de interacción ── */
   .modal-footer-social-pill-container {
-    display: flex; justify-content: space-between;
-    align-items: center; padding-top: 15px; margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    margin-top: 10px;
   }
   
   .interaction-pills-left { display: flex; gap: 8px; }
   
   .interaction-pill-button {
-    background-color: #f0f2f5; padding: 8px 16px;
-    border-radius: 25px; display: inline-flex;
-    align-items: center; gap: 8px; cursor: pointer;
-    transition: 0.2s; border: none; font-weight: 600; font-size: 0.9rem;
+    background: #f0f2f5;
+    padding: 8px 16px;
+    border-radius: 25px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.2s;
   }
   
-  .interaction-pill-button:hover { background-color: #e4e6e9; }
+  .interaction-pill-button:hover { background: #e4e6e9; }
   
   /* ============================================================
-     MODAL COMENTARIOS — REDISEÑADO
+     MODAL COMENTARIOS
      ============================================================ */
   
   .modal-content-comments {
@@ -229,7 +269,7 @@
   
   .back-btn:hover { background: #e0e0e0; }
   
-  .comments-list { 
+  .comments-list {
     flex-grow: 1;
     padding: 16px;
     overflow-y: auto;
@@ -238,10 +278,10 @@
     gap: 10px;
   }
   
-  .comment-bubble { 
+  .comment-bubble {
     background: #fff;
     padding: 14px 16px;
-    border-radius: 18px; 
+    border-radius: 18px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
   
@@ -293,7 +333,7 @@
     min-height: 42px;
     max-height: 100px;
     line-height: 1.4;
-    transition: border 0.2s;
+    transition: border-color 0.2s;
   }
   
   .comment-input-area textarea:focus { border-color: #111; }
@@ -315,31 +355,18 @@
   .comment-input-area button:hover { opacity: 0.85; }
   
   /* ============================================================
-     MODOS SLOW Y OFFLINE
-     ============================================================ */
-  
-  .mode-slow .modal-title-social { font-size: 26px; text-align: center; }
-  .mode-slow .modal-text-social  { font-size: 18px; line-height: 1.7; color: #222; }
-  .mode-slow .modal-image-container { display: none; }
-  .mode-slow .modal-body-social  { text-align: center; padding: 40px 25px; }
-  
-  .offline-card {
-    flex-direction: column; gap: 5px;
-    padding: 20px 0; cursor: default;
-  }
-  
-  .mode-offline .card-content-box h3 { font-size: 1.3rem; color: #000; margin-bottom: 8px; }
-  .mode-offline .news-description    { display: block; font-size: 15px; color: #444; line-height: 1.5; margin-bottom: 10px; }
-  .mode-offline .card-footer-mini span:last-child { display: none; }
-  
-  /* ============================================================
      CONNECTION BANNER
      ============================================================ */
   
   .connection-banner {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 14px; border-radius: 20px;
-    font-size: 0.75rem; font-weight: 800; margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    margin-left: 10px;
   }
   
   @keyframes pulse {
@@ -350,52 +377,134 @@
   .connection-banner span:first-child { animation: pulse 2s infinite; }
   
   /* ============================================================
-     MEJORAS VISUALES POR MODO
+     MODO FAST
      ============================================================ */
   
   .mode-fast .social-card-mini:hover {
-    opacity: 1; transform: translateY(-2px);
+    opacity: 1;
+    transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0,200,150,0.1);
     transition: transform 0.15s, box-shadow 0.15s;
   }
   
-  .mode-fast .source-label { color: #00c896; }
+  .mode-fast .source-label { color: #007a5e; }
+  
+  /* ============================================================
+     MODO SLOW
+     ============================================================ */
   
   .mode-slow { background: #fffdf7; }
-  .mode-slow .social-card-mini { background: #fffef9; border-bottom: 1px solid #f0e8d0; }
-  .mode-slow .card-image-box img { filter: grayscale(1); opacity: 0.85; }
-  .mode-slow .source-label { color: #e6950a; }
+  
+  .mode-slow .social-card-mini {
+    background: #fffef9;
+    border-bottom: 1px solid #f0e8d0;
+  }
+  
+  .mode-slow .card-image-box img {
+    filter: grayscale(1);
+    opacity: 0.85;
+  }
+  
+  .mode-slow .source-label { color: #8a5a00; }
   
   .mode-slow .news-page-banner {
-    position: fixed; top: 60px; left: 0; right: 0;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
     background: linear-gradient(90deg, #f5a623, #f7bc5a);
-    color: #5a3200; font-size: 0.72rem; font-weight: 800;
-    letter-spacing: 0.5px; text-align: center; padding: 6px 0;
-    z-index: 999; text-transform: uppercase;
+    color: #5a3200;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-align: center;
+    padding: 6px 0;
+    z-index: 999;
+    text-transform: uppercase;
   }
   
   .mode-slow .news-header { margin-top: 105px; }
   
+  .mode-slow .modal-title-social { font-size: 26px; text-align: center; }
+  .mode-slow .modal-text-social  { font-size: 18px; line-height: 1.7; color: #222; }
+  .mode-slow .modal-image-container { display: none; }
+  .mode-slow .modal-body-social  { text-align: center; padding: 40px 25px; }
+  
+  /* ============================================================
+     MODO OFFLINE
+     ============================================================ */
+  
   .mode-offline { background: #f4f4f4; }
   
+  .offline-card {
+    flex-direction: column;
+    gap: 5px;
+    padding: 20px 0;
+    cursor: default;
+  }
+  
   .mode-offline .offline-card {
-    border-left: 3px solid #c5221f; padding-left: 14px;
-    background: #fff; border-bottom: 1px solid #ddd;
+    border-left: 3px solid #c5221f;
+    padding-left: 14px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
   }
   
   .mode-offline .source-label {
-    color: #c5221f; text-transform: uppercase;
-    letter-spacing: 0.5px; font-size: 0.7rem;
+    color: #c5221f;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.7rem;
   }
   
-  .mode-offline .card-content-box h3 { font-weight: 800; }
+  .mode-offline .card-content-box h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #000;
+    margin-bottom: 8px;
+  }
+  
+  .mode-offline .news-description {
+    display: block;
+    font-size: 15px;
+    color: #444;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  
+  .mode-offline .card-footer-mini span:last-child { display: none; }
   
   .mode-offline .news-page-banner {
-    position: fixed; top: 60px; left: 0; right: 0;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
     background: linear-gradient(90deg, #c5221f, #e53935);
-    color: #fff; font-size: 0.72rem; font-weight: 800;
-    letter-spacing: 0.5px; text-align: center; padding: 6px 0;
-    z-index: 999; text-transform: uppercase;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-align: center;
+    padding: 6px 0;
+    z-index: 999;
+    text-transform: uppercase;
   }
   
   .mode-offline .news-header { margin-top: 105px; }
+  
+  /* ============================================================
+     FEED SECTION — FIX CLS
+     Reserva espacio antes de que Firebase responda para evitar
+     que el contenido empuje el layout al cargar (CLS 0.366 → ~0)
+     ============================================================ */
+  
+  .feed-section {
+    min-height: 600px;
+  }
+  
+  .feed-section h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 12px;
+  }

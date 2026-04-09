@@ -1,13 +1,10 @@
 import { db } from "./firebase";
 import { collection, query, orderBy, limit, getDocs, doc, setDoc, where } from "firebase/firestore";
 
-// Las llaves solo se usan si decides volver a llamar a la API directa, 
-// pero ahora usamos la inyección de Python.
 const API_KEY = process.env.REACT_APP_EXPLORE_API_KEY;
 
 /**
  * 1. OBTENER TOP 10 TENDENCIAS (CONTEO REAL)
- * Requerido por Explorar.js
  */
 export const getTrendingNews = async (providedKey) => {
   if (providedKey !== API_KEY) throw new Error("401: No autorizado.");
@@ -27,10 +24,10 @@ export const getTrendingNews = async (providedKey) => {
     });
 
     await Promise.all(Object.entries(tagCounts).map(([name, count]) =>
-      setDoc(doc(db, "trends", name), { 
-        name, 
-        count, 
-        lastUpdated: new Date() 
+      setDoc(doc(db, "trends", name), {
+        name,
+        count,
+        lastUpdated: new Date()
       }, { merge: true })
     ));
 
@@ -49,7 +46,6 @@ export const getTrendingNews = async (providedKey) => {
 
 /**
  * 2. ACTUALIZAR TENDENCIAS (Para creación de posts)
- * Requerido por CreatePostPage.js
  */
 export const updateHashtagTrends = async (tagsArray) => {
   if (!tagsArray || tagsArray.length === 0) return;
@@ -57,10 +53,10 @@ export const updateHashtagTrends = async (tagsArray) => {
     const batchPromises = tagsArray.map(async (tag) => {
       const cleanTag = tag.toLowerCase().trim().replace("#", "");
       const trendRef = doc(db, "trends", cleanTag);
-      
+
       const postsQuery = query(collection(db, "posts"), where("tags", "array-contains", cleanTag));
       const snapCount = await getDocs(postsQuery);
-      
+
       await setDoc(trendRef, {
         name: cleanTag,
         count: snapCount.size,
@@ -74,29 +70,41 @@ export const updateHashtagTrends = async (tagsArray) => {
 };
 
 /**
- * 3. FETCH NEWS DESDE FIRESTORE (Lógica de Tesis)
- * Consume las noticias globales inyectadas por el script de Python.
+ * 3. FETCH NEWS DESDE FIRESTORE
+ * FIX CLS: traemos más artículos para compensar duplicados por categoría,
+ * y deduplicamos por doc.id (más confiable que por title).
  */
 export const fetchTopNews = async () => {
   try {
     const newsRef = collection(db, "noticias_tesis");
-    
-    // CAMBIO AQUÍ: Subimos el límite a 20 o 30 y ordenamos por fecha
+
+    // Traemos 60 para tener margen después de deduplicar
     const q = query(
-      newsRef, 
-      orderBy("publishedAt", "desc"), // Lo más nuevo primero
-      limit(30) // Aquí es donde liberas el flujo
-    ); 
-    
+      newsRef,
+      orderBy("publishedAt", "desc"),
+      limit(60)
+    );
+
     const querySnapshot = await getDocs(q);
-    const articles = querySnapshot.docs.map(doc => ({
-      ...doc.data(),
-      id: doc.id
-    }));
 
-    if (articles.length === 0) throw new Error("Firestore vacío");
+    // FIX: deduplicar por doc.id (el hash SHA256 del título que genera Python)
+    // Esto elimina el CLS causado por artículos repetidos que hacen crecer el DOM
+    const seen = new Set();
+    const articles = [];
 
-    return articles;
+    querySnapshot.docs.forEach(d => {
+      if (!seen.has(d.id)) {
+        seen.add(d.id);
+        articles.push({ ...d.data(), id: d.id });
+      }
+    });
+
+    // Limitar a 30 artículos únicos máximo
+    const unique = articles.slice(0, 30);
+
+    if (unique.length === 0) throw new Error("Firestore vacío");
+
+    return unique;
   } catch (error) {
     console.error("Error al leer noticias globales:", error);
     return [{
