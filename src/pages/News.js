@@ -27,12 +27,23 @@ function News() {
   const isOffline = connection === "offline";
 
   useEffect(() => {
-    fetchTopNews().then(data => {
-      const uniqueData = Array.from(new Map(data.map(item => [item.title, item])).values());
-      setArticles(uniqueData);
-      setFilteredArticles(uniqueData);
-    });
-  }, []);
+
+    const loadNews = async ()=>{
+    
+    const data = await fetchTopNews();
+    
+    const uniqueData = Array.from(
+    new Map(data.map(item => [item.title, item])).values()
+    );
+    
+    setArticles(uniqueData);
+    setFilteredArticles(uniqueData);
+    
+    }
+    
+    setTimeout(loadNews,0);
+    
+    },[]);
 
   const handleLike = async (id) => {
     if (isOffline) return;
@@ -138,13 +149,16 @@ function News() {
                   <div className="card-image-box">
                     {isFast && a.urlToImage && (
                       // FIX: toHttps() previene Mixed Content
-                      <img
-                        src={toHttps(a.urlToImage)}
-                        alt="news"
-                        width={150}
-                        height={100}
-                        loading="eager"
-                      />
+                    <img
+ src={toHttps(a.urlToImage)}
+ alt="news"
+ width={150}
+ height={100}
+ loading="lazy"
+ decoding="async"
+ fetchpriority="low"
+ referrerPolicy="no-referrer"
+/>
                     )}
                     {isSlow && a.urlToImage && (
                       <img
