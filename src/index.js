@@ -7,5 +7,5 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
-
 register();
+//unregister();  CAmbiar al final de prueba y activarlo cuando sean pruebas 

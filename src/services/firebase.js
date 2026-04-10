@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { initializeAuth, browserLocalPersistence } from "firebase/auth";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -14,6 +14,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
+export const auth = initializeAuth(app, {
+  persistence: browserLocalPersistence  // ← sesión guardada localmente
+});
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+
+// TEMPORAL - quitar después de migración este lo use para migrar calidad pesada  abaja 
+//window.__db = db;
+//window.__collection = collection;
+//window.__getDocs = getDocs;
+//window.__doc = doc;
+//window.__updateDoc = updateDoc;

@@ -1,92 +1,91 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+// src/hooks/useConnection.js - VERSIÓN FINAL UNIFICADA
+import { useEffect, useState } from "react";
 
-function randomSeconds() {
-  const secs = Math.floor(Math.random() * 46) + 15;
-  console.log(`🔄 [useConnection] próximo cambio en ${secs}s`);
-  return secs * 1000;
-}
+/*
+============================================================
+SUSTENTACIÓN ACADÉMICA: Network Information API
+https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
 
-function isOnline() {
-  return navigator.onLine;
-}
+La detección de calidad de red se implementó mediante la Network Information API
+del navegador (navigator.connection.effectiveType), que reporta el tipo de
+conexión efectiva basado en métricas reales de latencia y ancho de banda.
 
-// Pausa el timer mientras la encuesta está abierta
+MODOS:
+  fast    → 4G  → UI completa con imágenes
+  slow    → 3G  → UI reducida, imágenes en gris, carga lazy
+  offline → 2G o sin internet → solo texto, sin imágenes ni interacciones
+
+PARA PRUEBAS MANUALES (consola del navegador):
+  FAST:    sessionStorage.setItem("forceConnection","fast"); location.reload();
+  SLOW:    sessionStorage.setItem("forceConnection","slow"); location.reload();
+  OFFLINE: sessionStorage.setItem("forceConnection","offline"); location.reload();
+  QUITAR:  sessionStorage.removeItem("forceConnection"); location.reload();
+============================================================
+*/
+
 export const surveyOpenRef = { current: false };
-
-// Callback que SurveyModal conecta para recibir notificaciones de cambio
 export const onModeChangeRef = { current: null };
 
+function getConnectionStatus() {
+  // Override manual para pruebas — comentar en producción final
+  const forced = sessionStorage.getItem("forceConnection");
+  if (forced) return forced;
+
+  if (!navigator.onLine) return "offline";
+
+  // Network Information API — sustentación académica
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const type = conn?.effectiveType || "4g";
+  const rtt  = conn?.rtt || 0;
+
+  if (type === "2g" || type === "slow-2g") return "offline";
+  if (type === "3g" || (type === "4g" && rtt > 500)) return "slow";
+  return "fast";
+}
+
 export default function useConnection() {
-  const [status, setStatus] = useState(() => {
-    const initial = isOnline() ? "fast" : "offline";
-    console.log(`📡 [useConnection] estado inicial: ${initial}`);
-    return initial;
-  });
 
-  const timerRef  = useRef(null);
-  const statusRef = useRef(status);
+  const [status, setStatus] = useState(() => getConnectionStatus());
 
-  const scheduleToggle = useCallback(() => {
-    clearTimeout(timerRef.current);
-    const delay = randomSeconds();
+  useEffect(() => {
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 
-    timerRef.current = setTimeout(() => {
-      if (!isOnline()) {
-        console.log("📡 sin internet, no alterno");
-        return;
-      }
-
-      // Si encuesta abierta, postponer sin cambiar modo
-      if (surveyOpenRef.current) {
-        console.log("⏸️ encuesta abierta, postponiendo cambio");
-        scheduleToggle();
-        return;
-      }
-
-      const prev = statusRef.current;
-      const next = prev === "fast" ? "slow" : "fast";
-      console.log(`📡 cambiando: ${prev} → ${next}`);
-
-      statusRef.current = next;
+    const update = () => {
+      if (sessionStorage.getItem("forceConnection")) return;
+      const prev = status;
+      const next = getConnectionStatus();
+      if (prev === next) return;
       setStatus(next);
-
-      // Notificar al SurveyModal
       if (onModeChangeRef.current) {
         onModeChangeRef.current({ from: prev, to: next });
       }
-
-      scheduleToggle();
-    }, delay);
-  }, []);
-
-  useEffect(() => {
-    if (isOnline()) scheduleToggle();
-
-    const handleOffline = () => {
-      clearTimeout(timerRef.current);
-      const prev = statusRef.current;
-      statusRef.current = "offline";
-      setStatus("offline");
-      if (onModeChangeRef.current) {
-        onModeChangeRef.current({ from: prev, to: "offline" });
-      }
     };
 
-    const handleOnline = () => {
-      statusRef.current = "fast";
-      setStatus("fast");
-      scheduleToggle();
-    };
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    if (conn) conn.addEventListener("change", update);
 
-    window.addEventListener("offline", handleOffline);
-    window.addEventListener("online",  handleOnline);
+    // ↓ DEMO TESIS: toggle aleatorio para mostrar los 3 modos en presentación
+    // Descomenta este bloque para que el evaluador vea el cambio automático
+ // const interval = setInterval(() => {
+//   if (sessionStorage.getItem("forceConnection")) return;
+//   if (surveyOpenRef.current) return;
+//   setStatus(prev => {
+//     const next = prev === "fast" ? "slow" : "fast";
+//     console.log("🔄 Modo cambiado:", prev, "→", next);
+//     if (onModeChangeRef.current) onModeChangeRef.current({ from: prev, to: next });
+//     return next;
+//   });
+// }, (Math.floor(Math.random() * 46) + 15) * 1000);
+    // ↑ DEMO TESIS: comentar este bloque en producción final
 
     return () => {
-      clearTimeout(timerRef.current);
-      window.removeEventListener("offline", handleOffline);
-      window.removeEventListener("online",  handleOnline);
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+      if (conn) conn.removeEventListener("change", update);
+      //clearInterval(interval); // ← comentar junto con el interval de arriba
     };
-  }, [scheduleToggle]);
+  }, [status]);
 
   return status;
 }
