@@ -67,23 +67,23 @@ export default function useConnection() {
 
     // ↓ DEMO TESIS: toggle aleatorio para mostrar los 3 modos en presentación
     // Descomenta este bloque para que el evaluador vea el cambio automático
- // const interval = setInterval(() => {
-//   if (sessionStorage.getItem("forceConnection")) return;
-//   if (surveyOpenRef.current) return;
-//   setStatus(prev => {
-//     const next = prev === "fast" ? "slow" : "fast";
-//     console.log("🔄 Modo cambiado:", prev, "→", next);
-//     if (onModeChangeRef.current) onModeChangeRef.current({ from: prev, to: next });
-//     return next;
-//   });
-// }, (Math.floor(Math.random() * 46) + 15) * 1000);
+  const interval = setInterval(() => {
+if (sessionStorage.getItem("forceConnection")) return;
+if (surveyOpenRef.current) return;
+setStatus(prev => {
+const next = prev === "fast" ? "slow" : "fast";
+console.log("🔄 Modo cambiado:", prev, "→", next);
+if (onModeChangeRef.current) onModeChangeRef.current({ from: prev, to: next });
+ return next;
+});
+}, (Math.floor(Math.random() * 46) + 15) * 1000);
     // ↑ DEMO TESIS: comentar este bloque en producción final
 
     return () => {
       window.removeEventListener("online", update);
       window.removeEventListener("offline", update);
       if (conn) conn.removeEventListener("change", update);
-      //clearInterval(interval); // ← comentar junto con el interval de arriba
+      clearInterval(interval); 
     };
   }, [status]);
 

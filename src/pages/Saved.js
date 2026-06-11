@@ -4,23 +4,21 @@ import { collection, onSnapshot, query, where, doc, updateDoc, increment } from 
 import Navbar from "../components/NavBar";
 import CommentSection from "../components/CommentSection";
 import ConnectionBanner from "../components/ConnectionBanner";
-import useConnection from "../hooks/useConnection";
+import { useConnectionContext } from "../context/ConnectionContext";
 import "../styles/News.css";
 
 function Saved() {
-  const [allSaved, setAllSaved]       = useState([]);
+  const connection = useConnectionContext();
+  const [allSaved, setAllSaved]         = useState([]);
   const [selectedNews, setSelectedNews] = useState(null);
   const [showComments, setShowComments] = useState(false);
 
-  // Hook para detectar el estado de la conexión
-  const connection = useConnection(); 
   const isFast    = connection === "fast";
   const isSlow    = connection === "slow";
   const isOffline = connection === "offline";
 
   const currentUser = auth.currentUser;
 
-  // Escucha de datos en tiempo real desde Firebase
   useEffect(() => {
     if (!currentUser) return;
 
@@ -48,7 +46,7 @@ function Saved() {
   }, [currentUser]);
 
   const handleLike = async (id) => {
-    if (isOffline) return; 
+    if (isOffline) return;
     try {
       const col = allSaved.find(a => a.id === id)?.type === "news" ? "noticias_tesis" : "posts";
       await updateDoc(doc(db, col, id), { likes: increment(1) });
@@ -59,7 +57,6 @@ function Saved() {
     <div className={`news-page mode-${connection}`}>
       <Navbar />
       <div className="container" style={{ marginTop: "100px" }}>
-
         <header className="news-header">
           <div className="title-section">
             <h1>Mis Guardados 🔖</h1>
@@ -67,45 +64,35 @@ function Saved() {
           </div>
         </header>
 
-        {/* --- LISTADO PRINCIPAL (FEED) --- */}
         <div className="news-list-container">
           {allSaved.map((item) => (
             <article
               key={item.id}
               className={`social-card-mini ${isOffline ? "offline-card" : ""}`}
-              /* En modo offline se deshabilita la apertura del modal */
-              onClick={() => !isOffline && setSelectedNews(item)} 
+              onClick={() => !isOffline && setSelectedNews(item)}
             >
-              {/* INTERFAZ BAJA (Offline): Se oculta la imagen por completo */}
               {!isOffline && (item.urlToImage || item.imageUrl) && (
                 <div className="card-image-box">
                   <img
                     src={item.urlToImage || item.imageUrl}
                     alt="preview"
-                    /* Carga prioritaria en Fast, diferida en Slow */
                     loading={isFast ? "eager" : "lazy"}
-                    /* INTERFAZ MEDIA (Slow): Filtro visual de escala de grises */
                     style={{ filter: isSlow ? "grayscale(0.4)" : "none" }}
                   />
                 </div>
               )}
-
               <div className="card-content-box">
                 <span className="source-label">
                   {item.type === "news" ? item.source?.name : `Post de ${item.authorUsername}`}
                 </span>
-                
                 <h3>
                   {isFast || isOffline ? (item.title || item.text) : (item.title || item.text)?.slice(0, 80) + "..."}
                 </h3>
-                
-                {/* INTERFAZ BAJA (Offline): Renderizado de texto plano (Descripción) */}
                 {isOffline && (
                   <p className="news-description" style={{ marginTop: "8px", fontSize: "14px", color: "#333" }}>
                     {item.description || item.text?.slice(0, 150)}...
                   </p>
                 )}
-
                 <div className="card-footer-mini">
                   <span>❤️ {item.likes?.length || item.likes || 0}</span> •{" "}
                   <span>{item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : "Reciente"}</span>
@@ -116,58 +103,38 @@ function Saved() {
         </div>
       </div>
 
-      {/* --- MODAL DETALLE --- */}
       {selectedNews && !showComments && (
         <div className="modal-overlay" onClick={() => setSelectedNews(null)}>
           <div className="modal-content-social" onClick={e => e.stopPropagation()}>
-            
-            {/* Botón de cierre con diseño cuadrado */}
             <button className="close-modal-social" onClick={() => setSelectedNews(null)}>×</button>
-
-            {/* INTERFAZ MEDIA (Slow): Se quita la imagen del modal para ahorrar recursos */}
             {isFast && (selectedNews.urlToImage || selectedNews.imageUrl) && (
               <div className="modal-image-container">
-                <img
-                  src={selectedNews.urlToImage || selectedNews.imageUrl}
-                  className="modal-img-social"
-                  alt="detail"
-                />
+                <img src={selectedNews.urlToImage || selectedNews.imageUrl} className="modal-img-social" alt="detail" />
               </div>
             )}
-
-            {/* Ajuste de padding dinámico si no hay imagen (modo Slow) */}
             <div className="modal-body-social" style={{ paddingTop: isSlow ? "40px" : "20px" }}>
               <span className="source-label">{selectedNews.categories?.[0] || "Guardado"}</span>
               <h1 className="modal-title-social">{selectedNews.title || "Publicación"}</h1>
-              
-              {/* Fuente más grande en modo Slow para mejorar legibilidad */}
               <p className="modal-text-social" style={{ fontSize: isSlow ? "1.2rem" : "1rem" }}>
                 {selectedNews.description || selectedNews.text}
               </p>
-
-              {/* Vínculo para redirigir a la nota completa si es una noticia */}
               {selectedNews.type === "news" && selectedNews.url && (
                 <a href={selectedNews.url} target="_blank" rel="noopener noreferrer" className="full-note-link">
                   Leer nota completa
                 </a>
               )}
-
               <div className="modal-divider"></div>
-
-              {/* Contenedor de píldoras de interacción alineadas */}
               <div className="modal-footer-social-pill-container">
                 <div className="interaction-pills-left">
                   <div className="interaction-pill-button" onClick={() => handleLike(selectedNews.id)}>
                     <span className="icon">❤️</span>
                     <span className="count">{selectedNews.likes?.length || selectedNews.likes || 0}</span>
                   </div>
-
                   <div className="interaction-pill-button" onClick={() => setShowComments(true)}>
                     <span className="icon">💬</span>
                     <span className="count">Comentarios</span>
                   </div>
                 </div>
-
                 <div className="interaction-pill-button save-pill">
                   <span className="icon">🔖</span>
                   <span className="text">Guardado</span>
@@ -178,7 +145,6 @@ function Saved() {
         </div>
       )}
 
-      {/* --- MODAL COMENTARIOS --- */}
       {showComments && selectedNews && (
         <div className="modal-overlay" onClick={() => setShowComments(false)}>
           <div className="modal-content-comments" onClick={e => e.stopPropagation()}>

@@ -4,7 +4,8 @@ import Navbar from "../components/NavBar";
 import "../styles/News.css";
 import { doc, updateDoc, increment, arrayUnion } from "firebase/firestore";
 import { db, auth } from "../firebaseConfig";
-import useConnection from "../hooks/useConnection";
+import { useConnectionContext } from "../context/ConnectionContext";
+
 
 // FIX Mixed Content: fuerza https:// en URLs de imágenes externas (fix peru21.pe etc.)
 const toHttps = (url) => {
@@ -19,8 +20,8 @@ function News() {
   const [selectedNews, setSelectedNews]       = useState(null);
   const [showComments, setShowComments]       = useState(false);
   const [commentText, setCommentText]         = useState("");
+const connection = useConnectionContext();
 
-  const connection = useConnection();
 
   const isFast    = connection === "fast";
   const isSlow    = connection === "slow";

@@ -2,8 +2,9 @@ import React, { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./services/firebase";
+import useConnection from "./hooks/useConnection";
+import { ConnectionContext } from "./context/ConnectionContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 
 const FeedPage       = lazy(() => import("./pages/FeedPage"));
 const Explorar       = lazy(() => import("./pages/Explorar"));
@@ -19,13 +20,7 @@ const SurveyModal    = lazy(() => import("./components/SurveyModal"));
 function PrivateRoute({ user, authChecked, children }) {
   if (!authChecked) {
     return (
-      <div style={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "18px"
-      }}>
+      <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>
         Cargando...
       </div>
     );
@@ -37,13 +32,7 @@ function PrivateRoute({ user, authChecked, children }) {
 function PublicRoute({ user, authChecked, children }) {
   if (!authChecked) {
     return (
-      <div style={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "18px"
-      }}>
+      <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>
         Cargando...
       </div>
     );
@@ -53,110 +42,81 @@ function PublicRoute({ user, authChecked, children }) {
 }
 
 function App() {
-  const [user, setUser]           = useState(null);
-  const [authChecked, setAuthChecked] = useState(false); // ← antes era loading:true
+  const [user, setUser]               = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // UNA SOLA instancia del hook — se comparte via Context
+  const connection = useConnection();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser ?? null);
-      setAuthChecked(true); // ← la UI ya puede decidir qué mostrar
+      setAuthChecked(true);
     });
     return () => unsubscribe();
   }, []);
 
   return (
-    <BrowserRouter>
-      <Suspense fallback={
-        <div style={{
-          height: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "18px"
-        }}>
-          Cargando página...
-        </div>
-      }>
-        <Routes>
-          <Route
-            path="/login"
-            element={
+    <ConnectionContext.Provider value={connection}>
+      <BrowserRouter>
+        <Suspense fallback={
+          <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>
+            Cargando página...
+          </div>
+        }>
+          <Routes>
+            <Route path="/login" element={
               <PublicRoute user={user} authChecked={authChecked}>
                 <Login />
               </PublicRoute>
-            }
-          />
-          <Route
-            path="/register"
-            element={
+            }/>
+            <Route path="/register" element={
               <PublicRoute user={user} authChecked={authChecked}>
                 <Register />
               </PublicRoute>
-            }
-          />
-          <Route
-            path="/feed"
-            element={
+            }/>
+            <Route path="/feed" element={
               <PrivateRoute user={user} authChecked={authChecked}>
                 <FeedPage user={user} loading={!authChecked} />
               </PrivateRoute>
-            }
-          />
-          <Route
-            path="/explore"
-            element={
+            }/>
+            <Route path="/explore" element={
               <PrivateRoute user={user} authChecked={authChecked}>
                 <Explorar />
               </PrivateRoute>
-            }
-          />
-          <Route
-            path="/news"
-            element={
+            }/>
+            <Route path="/news" element={
               <PrivateRoute user={user} authChecked={authChecked}>
                 <News />
               </PrivateRoute>
-            }
-          />
-          <Route
-            path="/saved"
-            element={
+            }/>
+            <Route path="/saved" element={
               <PrivateRoute user={user} authChecked={authChecked}>
                 <Saved />
               </PrivateRoute>
-            }
-          />
-          <Route
-            path="/feedback"
-            element={
+            }/>
+            <Route path="/feedback" element={
               <PrivateRoute user={user} authChecked={authChecked}>
                 <Feedback />
               </PrivateRoute>
-            }
-          />
-          <Route
-            path="/create"
-            element={
+            }/>
+            <Route path="/create" element={
               <PrivateRoute user={user} authChecked={authChecked}>
                 <CreatePostPage />
               </PrivateRoute>
-            }
-          />
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+            }/>
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
 
-        {user && (
-          <Suspense fallback={null}>
-            <WelcomeModal />
-          </Suspense>
-        )}
-        {user && (
-          <Suspense fallback={null}>
-            <SurveyModal />
-          </Suspense>
-        )}
-      </Suspense>
-    </BrowserRouter>
+          {user && (
+            <Suspense fallback={null}><WelcomeModal /></Suspense>
+          )}
+          {user && (
+            <Suspense fallback={null}><SurveyModal /></Suspense>
+          )}
+        </Suspense>
+      </BrowserRouter>
+    </ConnectionContext.Provider>
   );
 }
 
